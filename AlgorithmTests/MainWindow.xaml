@@ -1,0 +1,23 @@
+﻿<Window x:Class="AlgorithmTests.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AlgorithmTests"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+        
+    <Grid>
+        <Label x:Name="msgLabel" Content="" HorizontalAlignment="Left" Margin="76,214,0,0" VerticalAlignment="Top" Width="333"/>
+        <Button x:Name="printButton" Content="Test algorithm performance!" HorizontalAlignment="Left" Margin="76,194,0,0" VerticalAlignment="Top" Width="222" Click="PrintButton_Click" Height="86"/>
+        <Label x:Name="testLabel1" Content="test1" HorizontalAlignment="Left" Margin="76,30,0,0" VerticalAlignment="Top" Width="333"/>
+        <Label x:Name="testLabel2" Content="{Binding name, Mode=OneWay}" HorizontalAlignment="Left" Margin="76,56,0,0" VerticalAlignment="Top" Width="333"/>
+
+        <DataGrid x:Name="arrayData" HorizontalAlignment="Left" Height="270" Margin="487,86,0,0" VerticalAlignment="Top" Width="254" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=algorithmName}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Window>
