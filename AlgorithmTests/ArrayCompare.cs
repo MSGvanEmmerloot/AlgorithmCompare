@@ -54,12 +54,12 @@ namespace AlgorithmTests
                 if (index < ticksElapsed.Length)
                 {
                     ticksElapsed[index] = ticks;
-                }                
+                }
             }
 
             public void SetResults(long[] results)
             {
-                for(int i=0; i<results.Length; i++)
+                for (int i = 0; i < results.Length; i++)
                 {
                     if (ticksElapsed.Length > i)
                     {
@@ -73,16 +73,20 @@ namespace AlgorithmTests
         public static List<List<AlgorithmPerformance>> algorithmPerformances = new List<List<AlgorithmPerformance>>();
         public static ObservableCollection<AlgorithmPerformance> algorithmPerformancesAverage = new ObservableCollection<AlgorithmPerformance>();
 
-        private const int arraySize = 20;
+        public static int arraySize { get; private set; } = 20;
         public static int numberOfArrays { get; private set; } = 0;
+
+        //For debugging
+        public static string runCode = "";
+        public static bool doneCalculating = false;
 
         //static string testString = "Hi";
         private static bool initialized = false;
         private static Stopwatch stopWatch = new Stopwatch();
         private static long nsPerTick = 0;
 
-        static List<int[]> baseArrays = new List<int[]>();
-        static List<int[]> sortedArrays = new List<int[]>();
+        public static List<int[]> baseArrays { get; private set; } = new List<int[]>();
+        public static List<int[]> sortedArrays { get; private set; } = new List<int[]>();
 
         private static List<Action<int[]>> algorithms = new List<Action<int[]>>();
         public static List<string> algorithmNames { get; private set; } = new List<string>();
@@ -111,7 +115,8 @@ namespace AlgorithmTests
 
         private static void CalculateAlgorithmAveragePerformances()
         {
-            if(algorithmPerformances == null) { return; }         
+            if(algorithmPerformances == null) { return; }
+            if(algorithmPerformances.Count == 0) { return; }
 
             int measurements = algorithmPerformances.Count;
             int numberOfAlgorithms = algorithmPerformances[0].Count;
@@ -161,6 +166,21 @@ namespace AlgorithmTests
                 Console.WriteLine(sb);
                 sb.Clear();
             }
+        }        
+
+        //private static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
+        //{
+        //    algorithmNames.Add(name);
+        //    algorithms.Add(algorithm);
+        //}
+        public static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
+        {
+            if (algorithmNames.Contains(name)){
+                return;
+            }
+
+            algorithmNames.Add(name);
+            algorithms.Add(algorithm);
         }
 
         public static int GetAlgorithmIndex(string algorithmName)
@@ -168,10 +188,15 @@ namespace AlgorithmTests
             return algorithmNames.FindIndex(x => x.Equals(algorithmName));
         }
 
-        private static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
+        public static bool QueueListLengthsAreEqual()
         {
-            algorithmNames.Add(name);
-            algorithms.Add(algorithm);
+            return (algorithmNames.Count == algorithms.Count);
+        }
+
+        public static void ClearAlgorithmQueue()
+        {
+            algorithms.Clear();
+            algorithmNames.Clear();
         }
 
         private static void InitArrays()
@@ -185,8 +210,25 @@ namespace AlgorithmTests
             ResetSortedArrays();
         }
 
+        public static void AddToBaseArrays(int[] newArray)
+        {
+            if(newArray.Length != arraySize){
+                return;
+            }
+
+            baseArrays.Add(newArray);
+
+            ResetSortedArray(baseArrays.Count-1);
+        }
+
+        public static void ClearArrayQueue()
+        {
+            baseArrays.Clear();
+            sortedArrays.Clear();
+        }
+
         // Create an array that's already ordered (0 1 2 3 4)
-        private static int[] CreateArray_InOrder()
+        public static int[] CreateArray_InOrder()
         {
             int[] tempArray = new int[arraySize];
 
@@ -232,137 +274,31 @@ namespace AlgorithmTests
             return tempArray;
         }
 
-        // Run all sorting algorithms
-        public static void RunTestBench()
-        {            
-            if (algorithms.Count < 0)
-            {
-                return;
-            }
-
-            // Dummy measurement to reduce overhead with the "real" measurements
-            stopWatch.Restart();
-            algorithms[0].Invoke(sortedArrays[0]);
-            stopWatch.Stop();
-
-            List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
-            for (int j = 0; j < algorithms.Count; j++)
-            {
-                Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
-                stopWatch.Reset();
-                ResetSortedArrays();
-
-                AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);                
-
-                for (int i = 0; i < sortedArrays.Count; i++)
-                {
-                    stopWatch.Restart();
-                    algorithms[j].Invoke(sortedArrays[i]);
-                    stopWatch.Stop();
-                    long elapsedTicks = stopWatch.ElapsedTicks;
-                    currentPerformance.AddResult(i, elapsedTicks);
-                    Console.WriteLine("Sorting array " + i + " took " + formatTime(elapsedTicks) + " (" + elapsedTicks + " ticks)");
-                }
-                currentTestRun.Add(currentPerformance);
-
-                Console.WriteLine("Before reset");
-                PrintArrays(sortedArrays);
-                ResetSortedArrays();
-                Console.WriteLine("After reset");
-                PrintArrays(sortedArrays);
-            }
-
-            algorithmPerformances.Add(currentTestRun);
-            CalculateAlgorithmAveragePerformances();
-        }
-
-        // Run all sorting algorithms, but in the other direction (TBD)
-        public static void RunTestBenchReverse()
-        {
-            if (algorithms.Count < 0)
-            {
-                return;
-            }
-
-            List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
-            for (int j = algorithms.Count - 1; j > -1; j--)
-            {
-                Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
-                stopWatch.Reset();
-                ResetSortedArrays();
-
-                AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);
-
-                for (int i = sortedArrays.Count - 1; i > -1; i--)
-                {
-                    stopWatch.Restart();
-                    algorithms[j].Invoke(sortedArrays[i]);
-                    stopWatch.Stop();
-                    long elapsedTicks = stopWatch.ElapsedTicks;
-                    currentPerformance.AddResult(i, elapsedTicks);
-                    Console.WriteLine("Sorting array " + i + " took " + formatTime(elapsedTicks) + " (" + elapsedTicks + " ticks)");
-                }
-                currentTestRun.Add(currentPerformance);
-                ResetSortedArrays();
-            }
-
-            algorithmPerformances.Add(currentTestRun);
-            CalculateAlgorithmAveragePerformances();
-        }
-        //public static void RunTestBenchReverse()
-        //{
-        //    for (int j = algorithms.Count-1; j > -1; j--)
-        //    {
-        //        Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
-        //        stopWatch.Reset();
-        //        ResetSortedArrays();
-        //        for (int i = sortedArrays.Count-1; i > -1; i--)
-        //        {
-        //            stopWatch.Restart();
-        //            algorithms[j].Invoke(sortedArrays[i]);
-        //            stopWatch.Stop();
-        //            long elapsedTicks = stopWatch.ElapsedTicks;
-        //            Console.WriteLine("Sorting array " + i + " took " + formatTime(elapsedTicks) + " (" + elapsedTicks + " ticks)");
-        //        }
-        //        ResetSortedArrays();
-        //    }
-        //}
-
-        // Format time to a good readable format
-        public static string formatTime(double elapsedTicks)
-        {
-            double elapsedNanoseconds = (elapsedTicks * nsPerTick);
-            string suffix = "ns";
-
-            elapsedNanoseconds /= 1000;
-            suffix = "us";
-
-            if (elapsedNanoseconds > 999)
-            {
-                elapsedNanoseconds /= 1000;
-                suffix = "ms";
-            }
-
-            return elapsedNanoseconds.ToString() + " " + suffix;
-        }
-
         // Reset one element of sortedArray
         private static void ResetSortedArray(int index)
         {
-            if (sortedArrays[index] == null)
+            if(baseArrays.Count < index)
             {
-                sortedArrays.Add(new int[baseArrays[index].Length - 1]);
+                return;
             }
 
-            Array.Copy(baseArrays[index], sortedArrays[index], baseArrays[index].Length);            
+            if (sortedArrays.Count<index || index == 0)            
+            {
+                sortedArrays.Add(new int[baseArrays[index].Length]);
+            }
+
+            if (baseArrays[index] != null && sortedArrays[index] != null)
+            {
+                Array.Copy(baseArrays[index], sortedArrays[index], baseArrays[index].Length);
+            }
         }
 
         // Reset all sortedArray elements
-        private static void ResetSortedArrays()
+        public static void ResetSortedArrays()
         {
-            for(int i=0; i< baseArrays.Count; i++)
+            for (int i = 0; i < baseArrays.Count; i++)
             {
-                if (sortedArrays.Count<i+1)
+                if (sortedArrays.Count < i + 1)
                 {
                     sortedArrays.Add(new int[baseArrays[i].Length]);
                 }
@@ -370,6 +306,198 @@ namespace AlgorithmTests
                 Array.Copy(baseArrays[i], sortedArrays[i], baseArrays[i].Length);
             }
         }
+
+        // Run all sorting algorithms
+        public static void RunTestbench(int runAmount = 1)
+        {
+            if (algorithms.Count <= 0)
+            {
+                return;
+            }
+
+            // Dummy measurement to reduce overhead with the "real" measurements
+            ResetStopWatch();
+
+            for (int r = 0; r < runAmount; r++)
+            {
+                // Run real measurements
+                algorithmPerformances.Add(RunAllAlgorithms());
+            }
+
+            // Calculate the average of all measurements per array per algorithm
+            CalculateAlgorithmAveragePerformances();
+        }
+
+        private static void ResetStopWatch()
+        {
+            stopWatch.Restart();
+            algorithms[0].Invoke(sortedArrays[0]);
+            stopWatch.Stop();
+        }
+
+        public static List<AlgorithmPerformance> RunAllAlgorithms(bool log = false)
+        {
+            List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
+
+            for (int j = 0; j < algorithms.Count; j++)
+            {
+                currentTestRun.Add(RunAlgorithm(j, log));
+            }
+
+            return currentTestRun;
+        }
+
+        public static AlgorithmPerformance RunAlgorithm(int algorithmIndex, bool log = false)
+        {
+            if (log)
+            {            
+                Console.WriteLine("Calling algorithm \"" + algorithmNames[algorithmIndex] + "\"");
+            }
+
+            stopWatch.Reset();
+            ResetSortedArrays();
+
+            AlgorithmPerformance currentPerformance = RunAlgorithmForAllArrays(algorithmIndex);
+
+            if (log)
+            {            
+                Console.WriteLine("Before reset");
+                PrintArrays(sortedArrays);
+                ResetSortedArrays();
+                Console.WriteLine("After reset");
+                PrintArrays(sortedArrays);
+            }
+
+            return currentPerformance;
+        }
+
+        public static AlgorithmPerformance RunAlgorithmForAllArrays(int algorithmIndex, bool log = false)
+        {
+            AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[algorithmIndex]);
+
+            for (int i = 0; i < sortedArrays.Count; i++)
+            {
+                long elapsedTicks = RunAlgorithmForArray(algorithmIndex, i);
+                currentPerformance.AddResult(i, elapsedTicks);
+                if (log)
+                {
+                    Console.WriteLine("Sorting array " + i + " took " + FormatTimeFromTicks(elapsedTicks) + " (" + elapsedTicks + " ticks)");
+                }                
+            }
+
+            return currentPerformance;
+        }
+
+        public static long RunAlgorithmForArray(int algorithmIndex, int arrayIndex)
+        {
+            stopWatch.Restart();
+            algorithms[algorithmIndex].Invoke(sortedArrays[arrayIndex]);
+            stopWatch.Stop();
+            return stopWatch.ElapsedTicks;
+        }
+
+        //public static void RunTestbench()
+        //{
+        //    if (algorithms.Count <= 0)
+        //    {
+        //        return;
+        //    }
+
+        //    // Dummy measurement to reduce overhead with the "real" measurements
+        //    stopWatch.Restart();
+        //    algorithms[0].Invoke(sortedArrays[0]);
+        //    stopWatch.Stop();
+
+        //    List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
+        //    for (int j = 0; j < algorithms.Count; j++)
+        //    {
+        //        Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
+        //        stopWatch.Reset();
+        //        ResetSortedArrays();
+
+        //        AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);
+
+        //        for (int i = 0; i < sortedArrays.Count; i++)
+        //        {
+        //            stopWatch.Restart();
+        //            algorithms[j].Invoke(sortedArrays[i]);
+        //            stopWatch.Stop();
+        //            long elapsedTicks = stopWatch.ElapsedTicks;
+        //            currentPerformance.AddResult(i, elapsedTicks);
+        //            Console.WriteLine("Sorting array " + i + " took " + FormatTimeFromTicks(elapsedTicks) + " (" + elapsedTicks + " ticks)");
+        //        }
+        //        currentTestRun.Add(currentPerformance);
+
+        //        Console.WriteLine("Before reset");
+        //        PrintArrays(sortedArrays);
+        //        ResetSortedArrays();
+        //        Console.WriteLine("After reset");
+        //        PrintArrays(sortedArrays);
+        //    }
+
+        //    algorithmPerformances.Add(currentTestRun);
+        //    CalculateAlgorithmAveragePerformances();
+        //}
+
+        // Run all sorting algorithms, but in the other direction (TBD)
+        //public static void RunTestbenchReverse()
+        //{
+        //    if (algorithms.Count <= 0)
+        //    {
+        //        return;
+        //    }
+
+        //    List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
+        //    for (int j = algorithms.Count - 1; j > -1; j--)
+        //    {
+        //        Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
+        //        stopWatch.Reset();
+        //        ResetSortedArrays();
+
+        //        AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);
+
+        //        for (int i = sortedArrays.Count - 1; i > -1; i--)
+        //        {
+        //            stopWatch.Restart();
+        //            algorithms[j].Invoke(sortedArrays[i]);
+        //            stopWatch.Stop();
+        //            long elapsedTicks = stopWatch.ElapsedTicks;
+        //            currentPerformance.AddResult(i, elapsedTicks);
+        //            Console.WriteLine("Sorting array " + i + " took " + FormatTimeFromTicks(elapsedTicks) + " (" + elapsedTicks + " ticks)");
+        //        }
+        //        currentTestRun.Add(currentPerformance);
+        //        ResetSortedArrays();
+        //    }
+
+        //    algorithmPerformances.Add(currentTestRun);
+        //    CalculateAlgorithmAveragePerformances();
+        //}
+
+        // Format time to a good readable format
+        public static string FormatTimeFromTicks(double elapsedTicks)
+        {
+            double elapsedNanoseconds = (elapsedTicks * nsPerTick);
+            return FormatTimeFromNanoseconds(elapsedNanoseconds);
+        }
+        // Format time to a good readable format
+        public static string FormatTimeFromNanoseconds(double elapsedNanoseconds)
+        {
+            string suffix = "ns";
+
+            if (elapsedNanoseconds > 999)
+            {
+                elapsedNanoseconds /= 1000;
+                suffix = "us";
+
+                if (elapsedNanoseconds > 999)
+                {
+                    elapsedNanoseconds /= 1000;
+                    suffix = "ms";
+                }
+            }           
+
+            return elapsedNanoseconds.ToString() + " " + suffix;
+        }        
 
         //========== Print functions ==========//
         public static void PrintStopWatchVals()

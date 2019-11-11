@@ -54,12 +54,16 @@ namespace AlgorithmTests
             ArrayCompare.PrintArrays(null);
 
             Console.WriteLine("Running testbench forwards");
-            ArrayCompare.RunTestBench();
+            ArrayCompare.RunTestbench(2);
             toUpdate = true;
             //arrayData.Items.Refresh();
 
-            Console.WriteLine("Running testbench backwards");
-            ArrayCompare.RunTestBenchReverse();
+            //Console.WriteLine("Running testbench backwards");
+            //ArrayCompare.RunTestbenchReverse();
+
+            //Console.WriteLine("Running testbench forwards again");
+            //ArrayCompare.RunTestbench();
+
             arrayData.Items.Refresh();
             //UpdateDataGridBackgroundColor();
         }
