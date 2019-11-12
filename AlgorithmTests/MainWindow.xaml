@@ -5,19 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlgorithmTests"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-        
+        Title="Algorithm performance visualizer" Height="450" Width="800">
+
     <Grid>
         <Label x:Name="msgLabel" Content="" HorizontalAlignment="Left" Margin="76,214,0,0" VerticalAlignment="Top" Width="333"/>
-        <Button x:Name="printButton" Content="Test algorithm performance!" HorizontalAlignment="Left" Margin="76,194,0,0" VerticalAlignment="Top" Width="222" Click="PrintButton_Click" Height="86"/>
+        <Button x:Name="printButton" Content="Test algorithm performance!" HorizontalAlignment="Left" Margin="218,302,0,0" VerticalAlignment="Top" Width="222" Click="PrintButton_Click" Height="86"/>
         <Label x:Name="testLabel1" Content="test1" HorizontalAlignment="Left" Margin="76,30,0,0" VerticalAlignment="Top" Width="333"/>
         <Label x:Name="testLabel2" Content="{Binding name, Mode=OneWay}" HorizontalAlignment="Left" Margin="76,56,0,0" VerticalAlignment="Top" Width="333"/>
 
-        <DataGrid x:Name="arrayData" HorizontalAlignment="Left" Height="270" Margin="487,86,0,0" VerticalAlignment="Top" Width="254" AutoGenerateColumns="False">
+        <Canvas  Name="canGraph" Background="Azure"
+            Width="349" Height="198" Margin="91,86,0,0"
+            HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+        <DataGrid x:Name="arrayData"   Margin="487,86,0,0" AutoGenerateColumns="False"
+                  Width="254" Height="270"
+                  HorizontalAlignment="Left">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=algorithmName}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
+        <CheckBox x:Name="checkBoxOne" Content="1" Margin="60,86,0,0" VerticalAlignment="Top" Click="CheckBoxOne_Click" IsChecked="True" HorizontalAlignment="Left"/>
+        <CheckBox x:Name="checkBoxTwo" Content="2" HorizontalAlignment="Left" Margin="60,106,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxTwo_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxThree" Content="3" HorizontalAlignment="Left" Margin="60,126,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxThree_Click" IsChecked="True"/>
+        <Button x:Name="testButton" Content="Test" HorizontalAlignment="Left" Margin="91,342,0,0" VerticalAlignment="Top" Width="89" Click="TestButton_Click" Height="46"/>
+        <CheckBox x:Name="checkBoxAutoResize" Content="auto resize" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAutoResize_Click" IsChecked="True"/>
 
     </Grid>
 </Window>

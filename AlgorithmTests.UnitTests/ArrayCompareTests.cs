@@ -248,7 +248,16 @@ namespace AlgorithmTests.UnitTests
 
             Assert.AreEqual(expectedResult, measurements);
         }
-        
+
+        //public static List<AlgorithmPerformance> RunAllAlgorithms(bool log = false)
+
+        //public static AlgorithmPerformance RunAlgorithm(int algorithmIndex, bool log = false)
+
+        //public static AlgorithmPerformance RunAlgorithmForAllArrays(int algorithmIndex, bool log = false)
+
+        //public static long RunAlgorithmForArray(int algorithmIndex, int arrayIndex)
+
+
         [TestMethod]
         public void FormatTime_500ns_Returns500ns()
         {
