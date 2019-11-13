@@ -54,10 +54,10 @@ namespace AlgorithmTests
 
             graphData = new GraphData(canGraph);
 
-            graphData.checkBoxOneChecked = (checkBoxOne.IsChecked == true);
-            graphData.checkBoxTwoChecked = (checkBoxTwo.IsChecked == true);
-            graphData.checkBoxThreeChecked = (checkBoxThree.IsChecked == true);
-            graphData.checkBoxAutoResizeChecked = (checkBoxAutoResize.IsChecked == true);
+            //graphData.checkBoxOneChecked = (checkBoxOne.IsChecked == true);
+            //graphData.checkBoxTwoChecked = (checkBoxTwo.IsChecked == true);
+            //graphData.checkBoxThreeChecked = (checkBoxThree.IsChecked == true);
+            //graphData.checkBoxAutoResizeChecked = (checkBoxAutoResize.IsChecked == true);
 
             graphData.DrawCustomGraph();
         }
@@ -90,6 +90,15 @@ namespace AlgorithmTests
             {
                 algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
             }
+
+            checkBoxOne.Content = ArrayCompare.algorithmNames[0];
+            checkBoxOne.Background = graphData.canvasData.brushes[0];
+
+            checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
+            checkBoxTwo.Background = graphData.canvasData.brushes[1];
+
+            checkBoxThree.Content = ArrayCompare.algorithmNames[2];
+            checkBoxThree.Background = graphData.canvasData.brushes[2];
 
             graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
         }
@@ -132,25 +141,31 @@ namespace AlgorithmTests
                     }
                     else row.Background = Brushes.Lime;
                 }
+
+                checkBoxOne.Content = ArrayCompare.algorithmNames[0];
+                checkBoxOne.Background = graphData.canvasData.brushes[0];
+
+                checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
+                checkBoxTwo.Background = graphData.canvasData.brushes[1];
+
+                checkBoxThree.Content = ArrayCompare.algorithmNames[2];
+                checkBoxThree.Background = graphData.canvasData.brushes[2];
             }
         }
 
         private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
         {
-            graphData.checkBoxOneChecked = (checkBoxOne.IsChecked == true);
-            graphData.HandleCheckBox(0, (checkBoxOne.IsChecked == true));
+            graphData.ToggleVisible(0, (checkBoxOne.IsChecked == true));
         }
 
         private void CheckBoxTwo_Click(object sender, RoutedEventArgs e)
         {
-            graphData.checkBoxTwoChecked = (checkBoxTwo.IsChecked == true);
-            graphData.HandleCheckBox(1, (checkBoxTwo.IsChecked == true));
+            graphData.ToggleVisible(1, (checkBoxTwo.IsChecked == true));
         }
 
         private void CheckBoxThree_Click(object sender, RoutedEventArgs e)
         {
-            graphData.checkBoxThreeChecked = (checkBoxThree.IsChecked == true);
-            graphData.HandleCheckBox(2, (checkBoxThree.IsChecked == true));
+            graphData.ToggleVisible(2, (checkBoxThree.IsChecked == true));
         }
 
         //private void HandleCheckBox(int checkBoxNumber, bool visible)
@@ -189,11 +204,7 @@ namespace AlgorithmTests
 
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {
-            graphData.checkBoxAutoResizeChecked = (checkBoxAutoResize.IsChecked == true);
-            if (checkBoxAutoResize.IsChecked == true)
-            {
-                graphData.RescaleCanvas();
-            }            
+            graphData.ToggleAutoResize((checkBoxAutoResize.IsChecked == true));
         }
     }    
 }
