@@ -129,12 +129,12 @@ namespace AlgorithmTests
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < algorithmPerformancesAverage.Count; i++)
             {
-                sb.Append(algorithmPerformancesAverage[i].algorithmName + ") [");
+                sb.Append(algorithmPerformancesAverage[i].algorithmName + " [");
                 for (int j = 0; j < algorithmPerformancesAverage[i].ticksElapsed.Length; j++)
                 {
                     sb.Append(" ").Append(algorithmPerformancesAverage[i].ticksElapsed[j]);
                 }
-                sb.Append("]");
+                sb.Append(" ]");
                 Console.WriteLine(sb);
                 sb.Clear();
             }

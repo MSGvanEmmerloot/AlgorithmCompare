@@ -72,7 +72,7 @@ namespace AlgorithmTests
             //ArrayCompare.PrintArrays(null);
 
             Console.WriteLine("Running testbench forwards");
-            ArrayCompare.RunTestbench(2);
+            ArrayCompare.RunTestbench(5);
             toUpdate = true;
             //Console.WriteLine("Running testbench backwards");
             //ArrayCompare.RunTestbenchReverse();
