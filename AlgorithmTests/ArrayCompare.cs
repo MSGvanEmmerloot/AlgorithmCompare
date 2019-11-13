@@ -41,7 +41,6 @@ namespace AlgorithmTests
             }
         }
 
-        //public static List<AlgorithmPerformance> algorithmPerformances = new List<AlgorithmPerformance>();
         public static List<List<AlgorithmPerformance>> algorithmPerformances = new List<List<AlgorithmPerformance>>();
         public static ObservableCollection<AlgorithmPerformance> algorithmPerformancesAverage = new ObservableCollection<AlgorithmPerformance>();
 
@@ -49,10 +48,9 @@ namespace AlgorithmTests
         public static int numberOfArrays { get; private set; } = 0;
 
         //For debugging
-        public static string runCode = "";
-        public static bool doneCalculating = false;
+        //public static string runCode = "";
+        //public static bool doneCalculating = false;
 
-        //static string testString = "Hi";
         private static bool initialized = false;
         private static Stopwatch stopWatch = new Stopwatch();
         private static long nsPerTick = 0;
@@ -165,19 +163,6 @@ namespace AlgorithmTests
             algorithms.Clear();
             algorithmNames.Clear();
         }
-
-        // Get a list of measurements for one algorithm, for one array
-        //public static List<long> GetResultList(int algorithmIndex, int arrayIndex)
-        //{
-        //    List<long> results = new List<long>();
-
-        //    for (int i = 0; i < algorithmPerformances.Count; i++)
-        //    {
-        //        results.Add(algorithmPerformances[i][algorithmIndex].ticksElapsed[arrayIndex]);
-        //    }
-
-        //    return results;
-        //}
         
         // Get a list of measurements for one algorithm, for one array
         public static double[] GetResultArrayDouble(int algorithmIndex, int arrayIndex)
@@ -395,6 +380,7 @@ namespace AlgorithmTests
             double elapsedNanoseconds = (elapsedTicks * nsPerTick);
             return FormatTimeFromNanoseconds(elapsedNanoseconds);
         }
+
         // Format time to a good readable format
         public static string FormatTimeFromNanoseconds(double elapsedNanoseconds)
         {

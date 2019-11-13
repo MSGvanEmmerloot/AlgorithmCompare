@@ -17,7 +17,7 @@
 
         <DataGrid x:Name="arrayData"   Margin="487,86,0,32" AutoGenerateColumns="False"
                   Width="254"
-                  HorizontalAlignment="Left">
+                  HorizontalAlignment="Left" AlternatingRowBackground="#FF98DD8A" AlternationCount="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=algorithmName}" Width="*"/>
             </DataGrid.Columns>

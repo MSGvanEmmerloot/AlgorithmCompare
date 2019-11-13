@@ -30,7 +30,6 @@ namespace AlgorithmTests
         public MainWindow()
         {
             InitializeComponent();
-            ComponentDispatcher.ThreadIdle += new EventHandler(UpdateDataGridBackgroundColor);
 
             ArrayCompare.Init();
             arrayData.ItemsSource = ArrayCompare.algorithmPerformancesAverage;
@@ -48,16 +47,8 @@ namespace AlgorithmTests
                 cvAlgorithmPerformances.GroupDescriptions.Clear();
                 cvAlgorithmPerformances.GroupDescriptions.Add(new PropertyGroupDescription("algorithmName"));
             }
-            //UpdateDataGridBackgroundColor();
-            //DrawDemoGraph();
-            //DrawCustomGraph();
 
             graphData = new GraphData(canGraph);
-
-            //graphData.checkBoxOneChecked = (checkBoxOne.IsChecked == true);
-            //graphData.checkBoxTwoChecked = (checkBoxTwo.IsChecked == true);
-            //graphData.checkBoxThreeChecked = (checkBoxThree.IsChecked == true);
-            //graphData.checkBoxAutoResizeChecked = (checkBoxAutoResize.IsChecked == true);
 
             graphData.DrawCustomGraph();
         }
@@ -69,16 +60,11 @@ namespace AlgorithmTests
 
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            //ArrayCompare.PrintArrays(null);
-
             Console.WriteLine("Running testbench forwards");
             ArrayCompare.RunTestbench(5);
             toUpdate = true;
-            //Console.WriteLine("Running testbench backwards");
-            //ArrayCompare.RunTestbenchReverse();
 
             arrayData.Items.Refresh();
-            //UpdateDataGridBackgroundColor();
         }
 
         public void AddAlgorithmsDataToGraph()
@@ -102,56 +88,37 @@ namespace AlgorithmTests
 
             graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
         }
-
-        //private void UpdateDataGridBackgroundColor()
+        
+        //private void UpdateDataGridBackgroundColor(object sender, EventArgs e)
         //{
-        //    foreach (ArrayCompare.AlgorithmPerformance perf in arrayData.ItemsSource)
+        //    if (toUpdate)
         //    {
-        //        Console.WriteLine(perf.algorithmName);
-        //        var row = arrayData.ItemContainerGenerator.ContainerFromItem(perf) as DataGridRow;
+        //        toUpdate = false;
+        //        foreach (ArrayCompare.AlgorithmPerformance perf in arrayData.ItemsSource)
+        //        {
+        //            var row = arrayData.ItemContainerGenerator.ContainerFromItem(perf) as DataGridRow;
 
-        //        if (row == null)
-        //        {
-        //            return;
+        //            if (row == null)
+        //            {
+        //                return;
+        //            }
+        //            if (ArrayCompare.GetAlgorithmIndex(perf.algorithmName) % 2 == 0)
+        //            {
+        //                row.Background = Brushes.Aqua;
+        //            }
+        //            else row.Background = Brushes.Lime;
         //        }
-        //        if (ArrayCompare.GetAlgorithmIndex(perf.algorithmName) % 2 == 0)
-        //        {
-        //            row.Background = Brushes.Aqua;
-        //        }
-        //        else row.Background = Brushes.Lime;
+
+        //        checkBoxOne.Content = ArrayCompare.algorithmNames[0];
+        //        checkBoxOne.Background = graphData.canvasData.brushes[0];
+
+        //        checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
+        //        checkBoxTwo.Background = graphData.canvasData.brushes[1];
+
+        //        checkBoxThree.Content = ArrayCompare.algorithmNames[2];
+        //        checkBoxThree.Background = graphData.canvasData.brushes[2];
         //    }
         //}
-
-        private void UpdateDataGridBackgroundColor(object sender, EventArgs e)
-        {
-            if (toUpdate)
-            {
-                toUpdate = false;
-                foreach (ArrayCompare.AlgorithmPerformance perf in arrayData.ItemsSource)
-                {
-                    var row = arrayData.ItemContainerGenerator.ContainerFromItem(perf) as DataGridRow;
-
-                    if (row == null)
-                    {
-                        return;
-                    }
-                    if (ArrayCompare.GetAlgorithmIndex(perf.algorithmName) % 2 == 0)
-                    {
-                        row.Background = Brushes.Aqua;
-                    }
-                    else row.Background = Brushes.Lime;
-                }
-
-                checkBoxOne.Content = ArrayCompare.algorithmNames[0];
-                checkBoxOne.Background = graphData.canvasData.brushes[0];
-
-                checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
-                checkBoxTwo.Background = graphData.canvasData.brushes[1];
-
-                checkBoxThree.Content = ArrayCompare.algorithmNames[2];
-                checkBoxThree.Background = graphData.canvasData.brushes[2];
-            }
-        }
 
         private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
         {
@@ -167,41 +134,7 @@ namespace AlgorithmTests
         {
             graphData.ToggleVisible(2, (checkBoxThree.IsChecked == true));
         }
-
-        //private void HandleCheckBox(int checkBoxNumber, bool visible)
-        //{
-        //    string graphName = elementName_Graph + checkBoxNumber;
-        //    string averageName = elementName_Average + checkBoxNumber;
-
-        //    if (visible)
-        //    {
-        //        if (canvasElementNames.Keys.Contains(graphName))
-        //        {
-        //            canGraph.Children[canvasElementNames[graphName]].Visibility = Visibility.Visible;
-        //        }
-        //        if (canvasElementNames.Keys.Contains(averageName))
-        //        {
-        //            canGraph.Children[canvasElementNames[averageName]].Visibility = Visibility.Visible;
-        //        }                
-        //    }
-        //    else
-        //    {
-        //        if (canvasElementNames.Keys.Contains(graphName))
-        //        {
-        //            canGraph.Children[canvasElementNames[graphName]].Visibility = Visibility.Hidden;
-        //        }
-        //        if (canvasElementNames.Keys.Contains(averageName))
-        //        {
-        //            canGraph.Children[canvasElementNames[averageName]].Visibility = Visibility.Hidden;
-        //        }
-        //    }
-
-        //    if (checkBoxAutoResize.IsChecked == true)
-        //    {
-        //        RescaleCanvas();
-        //    }
-        //}
-
+        
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {
             graphData.ToggleAutoResize((checkBoxAutoResize.IsChecked == true));

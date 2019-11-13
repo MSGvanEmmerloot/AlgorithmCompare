@@ -17,7 +17,7 @@ This function will execute all algorithms for all provided arrays and measure th
 The following example shows how the functions are implemented in the current project. It executes 5 measurements, shows the average results and then adds the results to the graph.
 
 In MainWindow.xaml.cs:
-
+```
 // Run 5 measurements for every algorithm for every array
 ArrayCompare.RunTestBench(5);
 
@@ -33,6 +33,7 @@ for(int i=0; i< ArrayCompare.algorithmNames.Count; i++)
 
 // Add the retrieved results to the graph
 graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
+```
 
 ## Motivation
 
