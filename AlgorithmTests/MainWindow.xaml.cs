@@ -25,78 +25,107 @@ namespace AlgorithmTests
     {
         bool toUpdate = true;
 
-        int currentElementSelectedIndex = 0;
+        //int currentElementSelectedIndex = 0;
         List<string> canvasElementList = new List<string>();
         Dictionary<string, int> canvasElementNames = new Dictionary<string, int>();
 
-        public class GraphDataContainer
-        {
-            public int maxValueX { get; private set; } = 5;
-            public double maxValueY { get; private set; } = 10;
+        //public class GraphDataContainer
+        //{
+        //    Canvas graphCanvas;
 
-            public double graphWidth { get; private set; } = 0.0;
-            public double graphHeight { get; private set; } = 0.0;
+        //    public int maxValueX { get; private set; } = 5;
+        //    public double maxValueY { get; private set; } = 10.0;
 
-            public double margin { get; private set; } = 10;
-            public double xmin { get; private set; } = 0.0;
-            public double xmax { get; private set; } = 0.0;
-            public double ymin { get; private set; } = 0.0;
-            public double ymax { get; private set; } = 0.0;
+        //    public double graphWidth { get; private set; } = 0.0;
+        //    public double graphHeight { get; private set; } = 0.0;
 
-            public double xStep { get; private set; } = 0.0;
-            public double yStep { get; private set; } = 0.0;
-            public double yScale { get; private set; } = 0.0;
+        //    public double margin { get; private set; } = 10;
+        //    public double xmin { get; private set; } = 0.0;
+        //    public double xmax { get; private set; } = 0.0;
+        //    public double ymin { get; private set; } = 0.0;
+        //    public double ymax { get; private set; } = 0.0;
 
-            public List<double[]> dataSets { get; private set; } = new List<double[]>();
+        //    public double xStep { get; private set; } = 0.0;
+        //    public double yStep { get; private set; } = 0.0;
+        //    public double yScale { get; private set; } = 0.0;
 
-            public Brush[] brushes { get; private set; } = { Brushes.Red, Brushes.Green, Brushes.Blue };
-            public Brush[] brushesAverage { get; private set; } = { Brushes.Crimson, Brushes.DarkOliveGreen, Brushes.Navy };
+        //    public List<double[]> dataSets { get; private set; } = new List<double[]>();
 
-            public GraphDataContainer(double _graphWidth, double _graphHeight, double _margin, int _amountOfMeasurements, double _maxYValue)
-            {
-                graphWidth = _graphWidth;
-                graphHeight = _graphHeight;
-                margin = _margin;
-                maxValueX = _amountOfMeasurements;
-                maxValueY = _maxYValue;
+        //    public Brush[] brushes { get; private set; } = { Brushes.Red, Brushes.Green, Brushes.Blue };
+        //    public Brush[] brushesAverage { get; private set; } = { Brushes.Crimson, Brushes.DarkOliveGreen, Brushes.Navy };
 
-                Recalculate();
-            }
+        //    public GraphDataContainer(Canvas _canvas, double _graphWidth, double _graphHeight, double _margin, int _amountOfMeasurements, double _maxYValue)
+        //    {
+        //        graphCanvas = _canvas;
+        //        graphWidth = _graphWidth;
+        //        graphHeight = _graphHeight;
+        //        margin = _margin;
+        //        //maxValueX = _amountOfMeasurements;
+        //        maxValueY = _maxYValue;
 
-            public void Recalculate()
-            {
-                xmax = graphWidth - margin;
-                ymax = graphHeight - margin;
+        //        //Recalculate();
+        //    }
 
-                xmin = margin;
-                ymin = margin;
+        //    public void Recalculate()
+        //    {
+        //        if(dataSets.Count < 1)
+        //        {
+        //            Console.WriteLine("No datasets added!");
+        //            return;
+        //        }
 
-                xStep = xmax / (maxValueX - 1);
-                yStep = ymax / 5;
-                yScale = ymax / maxValueY;
-            }
+        //        maxValueX = dataSets[0].Length;
 
-            public void SetMargin(double _margin)
-            {
-                margin = _margin;
-            }
+        //        xmax = graphWidth - margin;
+        //        ymax = graphHeight - margin;
 
-            public void SetMaxX(int _x)
-            {
-                maxValueX = _x;
-            }
+        //        xmin = margin;
+        //        ymin = margin;
 
-            public void SetMaxY(double _y)
-            {
-                maxValueY = _y;
-            }
+        //        xStep = xmax / (maxValueX - 1);
+        //        yStep = ymax / 5;
+        //        yScale = ymax / maxValueY;
+        //    }
 
-            public void AddDataSet(double[] set)
-            {
-                dataSets.Add(set);
-            }
-        }
-        public GraphDataContainer graphData;
+        //    public void SetMargin(double _margin)
+        //    {
+        //        margin = _margin;
+        //    }
+
+        //    public void SetMaxX(int _x)
+        //    {
+        //        maxValueX = _x;
+        //    }
+
+        //    public void SetMaxY(double _y)
+        //    {
+        //        maxValueY = _y;
+        //    }
+
+        //    public void AddDataSet(double[] set)
+        //    {
+        //        dataSets.Add(set);
+        //    }
+
+        //    public void ResetDataSets()
+        //    {
+        //        dataSets.Clear();
+        //    }
+
+        //    public void PrintDataSetValues()
+        //    {
+        //        for(int d=0; d< dataSets.Count; d++)
+        //        {
+        //            for(int i=0; i< dataSets[d].Length; i++)
+        //            {
+        //                Console.WriteLine("dataSets["+d+"]["+i+"] = " + dataSets[d][i]);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public GraphDataContainer graphData;
+        public GraphData graphData;
 
         const string elementName_Xaxis = "X-Axis";
         const string elementName_Yaxis = "Y-Axis";
@@ -206,19 +235,19 @@ namespace AlgorithmTests
             double maxYVal = 10.0;
             double marginVal = 10;
 
-            graphData = new GraphDataContainer(canGraph.Width, canGraph.Height, marginVal, measurementsAmount, maxYVal);
+            //graphData = new GraphDataContainer(canGraph, canGraph.Width, canGraph.Height, marginVal, measurementsAmount, maxYVal);
+            graphData = new GraphData(canGraph, canGraph.Width, canGraph.Height, marginVal, measurementsAmount, maxYVal);
 
             double[] dataSet1 = new double[5] { 1, 2, 3, 2, 1 };
             graphData.AddDataSet(dataSet1);
-            //dataSets.Add(dataSet1);
 
             double[] dataSet2 = new double[5] { 4, 4, 1, 4, 4 };
             graphData.AddDataSet(dataSet2);
-            //dataSets.Add(dataSet2);
 
             double[] dataSet3 = new double[5] { 0, 4, 8, 8, 2 };
             graphData.AddDataSet(dataSet3);
-            //dataSets.Add(dataSet3);
+
+            graphData.Recalculate();
 
             RedrawAxes();
             CreateDataSets();
@@ -250,7 +279,6 @@ namespace AlgorithmTests
 
             if (canvasElementList.Contains(elementName_Yaxis))
             {
-                //canGraph.Children[canvasElementNames[elementName_Yaxis]] = yaxis_path;
                 int elementIndex = canvasElementNames[elementName_Yaxis];
                 canGraph.Children.RemoveAt(elementIndex);
                 canGraph.Children.Insert(elementIndex, yaxis_path);
@@ -283,7 +311,6 @@ namespace AlgorithmTests
 
             if (canvasElementList.Contains(elementName_Xaxis))
             {
-                //canGraph.Children[canvasElementNames[elementName_Xaxis]] = xaxis_path;
                 int elementIndex = canvasElementNames[elementName_Xaxis];
                 canGraph.Children.RemoveAt(elementIndex);
                 canGraph.Children.Insert(elementIndex, xaxis_path);
@@ -315,7 +342,6 @@ namespace AlgorithmTests
 
                 if (canvasElementList.Contains(elementName_Graph + d))
                 {
-                    //canGraph.Children[canvasElementNames[elementName_Graph + d]] = polyline;
                     int elementIndex = canvasElementNames[elementName_Graph + d];
                     canGraph.Children.RemoveAt(elementIndex);
                     canGraph.Children.Insert(elementIndex, polyline);
@@ -352,7 +378,6 @@ namespace AlgorithmTests
 
                 if (canvasElementList.Contains(elementName_Average + d))
                 {
-                    //canGraph.Children[canvasElementNames[elementName_Average + d]] = polylineAverage;
                     int elementIndex = canvasElementNames[elementName_Average + d];
                     canGraph.Children.RemoveAt(elementIndex);
                     canGraph.Children.Insert(elementIndex, polylineAverage);
@@ -380,20 +405,26 @@ namespace AlgorithmTests
             for (int d = 0; d < graphData.dataSets.Count; d++)
             {
                 if (d >= graphData.brushes.Length) { break; }
-                PointCollection points = new PointCollection();
+                PointCollection points = ((Polyline)canGraph.Children[canvasElementNames[elementName_Graph + d]]).Points;
+                ((Polyline)canGraph.Children[canvasElementNames[elementName_Graph + d]]).Points.Clear();
                 for (int i = 0; i < graphData.maxValueX; i++)
                 {
                     double xCoord = graphData.xmin + (i * graphData.xStep);
                     Point newPoint = new Point(xCoord, graphData.ymax - (graphData.dataSets[d][i] * graphData.yScale));
-                    ((Polyline)canGraph.Children[canvasElementNames[elementName_Graph + d]]).Points[i] = newPoint;
+
+                    if (i < points.Count - 1)
+                    {
+                        ((Polyline)canGraph.Children[canvasElementNames[elementName_Graph + d]]).Points[i] = newPoint;
+                    }
+                    else ((Polyline)canGraph.Children[canvasElementNames[elementName_Graph + d]]).Points.Add(newPoint);
                 }
             }
-            //double X = ((Polyline)canGraph.Children[canvasElementNames[graphName]]).Points[0].X;
-            //((Polyline)canGraph.Children[canvasElementNames[graphName]]).Points[0] = new Point(X, 3);
+
             for (int d = 0; d < graphData.dataSets.Count; d++)
             {
                 if (d >= graphData.brushesAverage.Length) { break; }
-                PointCollection pointsAverage = new PointCollection();
+                PointCollection pointsAverage = ((Polyline)canGraph.Children[canvasElementNames[elementName_Average + d]]).Points;
+                ((Polyline)canGraph.Children[canvasElementNames[elementName_Average + d]]).Points.Clear();
                 double sumValue = 0;
                 for (int i = 0; i < graphData.maxValueX; i++)
                 {
@@ -405,7 +436,12 @@ namespace AlgorithmTests
                 {
                     double xCoord = graphData.xmin + (i * graphData.xStep);
                     Point newPoint = new Point(xCoord, graphData.ymax - (averageValue * graphData.yScale));
-                    ((Polyline)canGraph.Children[canvasElementNames[elementName_Average + d]]).Points[i] = newPoint;
+                    
+                    if (i < pointsAverage.Count - 1)
+                    {
+                        ((Polyline)canGraph.Children[canvasElementNames[elementName_Average + d]]).Points[i] = newPoint;
+                    }
+                    else ((Polyline)canGraph.Children[canvasElementNames[elementName_Average + d]]).Points.Add(newPoint);
                 }
             }
         }
@@ -537,42 +573,78 @@ namespace AlgorithmTests
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            if (currentElementSelectedIndex < canGraph.Children.Count)
-            {
-                canGraph.Children[currentElementSelectedIndex].Visibility = Visibility.Visible;
-            }
+            //if (currentElementSelectedIndex < canGraph.Children.Count)
+            //{
+            //    canGraph.Children[currentElementSelectedIndex].Visibility = Visibility.Visible;
+            //}
 
-            currentElementSelectedIndex++;
-            if(currentElementSelectedIndex > canGraph.Children.Count - 1)
-            {
-                currentElementSelectedIndex = 0;
-            }
+            //currentElementSelectedIndex++;
+            //if(currentElementSelectedIndex > canGraph.Children.Count - 1)
+            //{
+            //    currentElementSelectedIndex = 0;
+            //}
 
-            if (currentElementSelectedIndex < canGraph.Children.Count)
-            {
-                Console.WriteLine("Hiding element " + currentElementSelectedIndex + ": " + canvasElementList[currentElementSelectedIndex]);
-                Console.WriteLine("Dictionary says the index of this element is " + canvasElementNames[canvasElementList[currentElementSelectedIndex]]);
-                canGraph.Children[currentElementSelectedIndex].Visibility = Visibility.Hidden;
-            }            
+            //if (currentElementSelectedIndex < canGraph.Children.Count)
+            //{
+            //    Console.WriteLine("Hiding element " + currentElementSelectedIndex + ": " + canvasElementList[currentElementSelectedIndex]);
+            //    Console.WriteLine("Dictionary says the index of this element is " + canvasElementNames[canvasElementList[currentElementSelectedIndex]]);
+            //    canGraph.Children[currentElementSelectedIndex].Visibility = Visibility.Hidden;
+            //}            
+            AddAlgorithmsDataToGraph();
         }
 
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            ArrayCompare.PrintArrays(null);
+            //ArrayCompare.PrintArrays(null);
 
             Console.WriteLine("Running testbench forwards");
             ArrayCompare.RunTestbench(2);
             toUpdate = true;
-            //arrayData.Items.Refresh();
-
             //Console.WriteLine("Running testbench backwards");
             //ArrayCompare.RunTestbenchReverse();
 
-            //Console.WriteLine("Running testbench forwards again");
-            //ArrayCompare.RunTestbench();
-
             arrayData.Items.Refresh();
             //UpdateDataGridBackgroundColor();
+        }
+
+        public void AddAlgorithmsDataToGraph()
+        {
+            //int measurements = ArrayCompare.algorithmPerformances.Count;
+            int algorithmCount = ArrayCompare.algorithmNames.Count;
+            
+            graphData.ResetDataSets();
+
+            // Get data of every algorithm for a single array
+            for(int i=0; i< algorithmCount; i++)
+            {
+                if (i > 2) { break; }
+                graphData.AddDataSet(ArrayCompare.GetResultArrayDouble(i, 1));
+            }
+
+            double maxY = 0.0;
+            for (int i = 0; i < graphData.dataSets.Count; i++)
+            {
+                for(int j=0; j< graphData.dataSets[i].Length; j++)
+                {
+                    double curY = graphData.dataSets[i][j];
+                    Console.WriteLine("Calculated value from graphPoints[" + j + "] of dataset " + i + " = " + curY);
+                    if (curY > maxY)
+                    {
+                        maxY = curY;
+                    }
+                }                
+            }
+
+            Console.WriteLine("Calculated maxY=" + maxY);
+
+            graphData.SetMaxY(maxY);
+            graphData.Recalculate();
+            RedrawAxisX();
+
+            // Recalculate and redraw graph
+            RecalculateDataSets();
+
+            graphData.PrintDataSetValues();
         }
 
         //private void UpdateDataGridBackgroundColor()
@@ -675,7 +747,7 @@ namespace AlgorithmTests
 
         private void RescaleCanvas()
         {
-            double maxY = 0;
+            double maxY;
             double minY = graphData.ymax;
             PointCollection graphPoints;
             

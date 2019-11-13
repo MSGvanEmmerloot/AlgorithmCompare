@@ -10,34 +10,6 @@ namespace AlgorithmTests
 {
     public static class ArrayCompare
     {
-        //public class AlgorithmPerformance
-        //{
-        //    public string algorithmName { get; private set; }
-        //    public long ticksElapsed { get; private set; }
-
-        //    public AlgorithmPerformance(string name, long ticks)
-        //    {
-        //        algorithmName = name;
-        //        ticksElapsed = ticks;
-        //    }
-        //}
-
-        //public class ArrayPerformance
-        //{
-        //    public List<AlgorithmPerformance> algorithmPerformances;
-
-        //    public ArrayPerformance()
-        //    {
-        //        algorithmPerformances = new List<AlgorithmPerformance>();
-        //    }
-
-        //    public void AddAlgorithmPerformance(string name, long ticks)
-        //    {
-        //        algorithmPerformances.Add(new AlgorithmPerformance(name, ticks));
-        //    }
-        //}
-
-        //public static List<ArrayPerformance> arrayPerformances = new List<ArrayPerformance>();
         public class AlgorithmPerformance
         {
             public string algorithmName { get; private set; }
@@ -168,11 +140,6 @@ namespace AlgorithmTests
             }
         }        
 
-        //private static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
-        //{
-        //    algorithmNames.Add(name);
-        //    algorithms.Add(algorithm);
-        //}
         public static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
         {
             if (algorithmNames.Contains(name)){
@@ -197,6 +164,32 @@ namespace AlgorithmTests
         {
             algorithms.Clear();
             algorithmNames.Clear();
+        }
+
+        // Get a list of measurements for one algorithm, for one array
+        //public static List<long> GetResultList(int algorithmIndex, int arrayIndex)
+        //{
+        //    List<long> results = new List<long>();
+
+        //    for (int i = 0; i < algorithmPerformances.Count; i++)
+        //    {
+        //        results.Add(algorithmPerformances[i][algorithmIndex].ticksElapsed[arrayIndex]);
+        //    }
+
+        //    return results;
+        //}
+        
+        // Get a list of measurements for one algorithm, for one array
+        public static double[] GetResultArrayDouble(int algorithmIndex, int arrayIndex)
+        {
+            double[] results = new double[algorithmPerformances.Count];
+
+            for (int i = 0; i < algorithmPerformances.Count; i++)
+            {
+                results[i] = algorithmPerformances[i][algorithmIndex].ticksElapsed[arrayIndex];
+            }
+
+            return results;
         }
 
         private static void InitArrays()
@@ -395,84 +388,7 @@ namespace AlgorithmTests
             stopWatch.Stop();
             return stopWatch.ElapsedTicks;
         }
-
-        //public static void RunTestbench()
-        //{
-        //    if (algorithms.Count <= 0)
-        //    {
-        //        return;
-        //    }
-
-        //    // Dummy measurement to reduce overhead with the "real" measurements
-        //    stopWatch.Restart();
-        //    algorithms[0].Invoke(sortedArrays[0]);
-        //    stopWatch.Stop();
-
-        //    List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
-        //    for (int j = 0; j < algorithms.Count; j++)
-        //    {
-        //        Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
-        //        stopWatch.Reset();
-        //        ResetSortedArrays();
-
-        //        AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);
-
-        //        for (int i = 0; i < sortedArrays.Count; i++)
-        //        {
-        //            stopWatch.Restart();
-        //            algorithms[j].Invoke(sortedArrays[i]);
-        //            stopWatch.Stop();
-        //            long elapsedTicks = stopWatch.ElapsedTicks;
-        //            currentPerformance.AddResult(i, elapsedTicks);
-        //            Console.WriteLine("Sorting array " + i + " took " + FormatTimeFromTicks(elapsedTicks) + " (" + elapsedTicks + " ticks)");
-        //        }
-        //        currentTestRun.Add(currentPerformance);
-
-        //        Console.WriteLine("Before reset");
-        //        PrintArrays(sortedArrays);
-        //        ResetSortedArrays();
-        //        Console.WriteLine("After reset");
-        //        PrintArrays(sortedArrays);
-        //    }
-
-        //    algorithmPerformances.Add(currentTestRun);
-        //    CalculateAlgorithmAveragePerformances();
-        //}
-
-        // Run all sorting algorithms, but in the other direction (TBD)
-        //public static void RunTestbenchReverse()
-        //{
-        //    if (algorithms.Count <= 0)
-        //    {
-        //        return;
-        //    }
-
-        //    List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
-        //    for (int j = algorithms.Count - 1; j > -1; j--)
-        //    {
-        //        Console.WriteLine("Calling algorithm \"" + algorithmNames[j] + "\"");
-        //        stopWatch.Reset();
-        //        ResetSortedArrays();
-
-        //        AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[j]);
-
-        //        for (int i = sortedArrays.Count - 1; i > -1; i--)
-        //        {
-        //            stopWatch.Restart();
-        //            algorithms[j].Invoke(sortedArrays[i]);
-        //            stopWatch.Stop();
-        //            long elapsedTicks = stopWatch.ElapsedTicks;
-        //            currentPerformance.AddResult(i, elapsedTicks);
-        //            Console.WriteLine("Sorting array " + i + " took " + FormatTimeFromTicks(elapsedTicks) + " (" + elapsedTicks + " ticks)");
-        //        }
-        //        currentTestRun.Add(currentPerformance);
-        //        ResetSortedArrays();
-        //    }
-
-        //    algorithmPerformances.Add(currentTestRun);
-        //    CalculateAlgorithmAveragePerformances();
-        //}
-
+        
         // Format time to a good readable format
         public static string FormatTimeFromTicks(double elapsedTicks)
         {
