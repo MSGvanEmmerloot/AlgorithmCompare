@@ -134,10 +134,25 @@ namespace AlgorithmTests
         {
             graphData.ToggleVisible(2, (checkBoxThree.IsChecked == true));
         }
-        
+
+        private void CheckBoxFour_Click(object sender, RoutedEventArgs e)
+        {
+            //graphData.ToggleVisible(2, (checkBoxFour.IsChecked == true));
+        }
+
+        private void CheckBoxFive_Click(object sender, RoutedEventArgs e)
+        {
+            //graphData.ToggleVisible(2, (checkBoxFive.IsChecked == true));
+        }
+
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {
             graphData.ToggleAutoResize((checkBoxAutoResize.IsChecked == true));
+        }
+
+        private void CheckBoxPlotPolyline_Click(object sender, RoutedEventArgs e)
+        {
+            graphData.PlotPolyline((checkBoxPolyLine.IsChecked == true));
         }
     }    
 }
