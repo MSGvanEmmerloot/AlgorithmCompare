@@ -28,11 +28,10 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string xString = typeof(GraphData).GetField("elementName_Xaxis").GetValue(null).ToString();
 
             graphData.RedrawAxisX();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(xString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Xaxis)));
             Assert.AreEqual(1, graphData.canvasElementList.Count);
         }
 
@@ -41,12 +40,11 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string xString = typeof(GraphData).GetField("elementName_Xaxis").GetValue(null).ToString();
             graphData.RedrawAxisX();
 
             graphData.RedrawAxisX();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(xString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Xaxis)));
             Assert.AreEqual(1, graphData.canvasElementList.Count);
         }
 
@@ -55,11 +53,10 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string yString = typeof(GraphData).GetField("elementName_Yaxis").GetValue(null).ToString();
 
             graphData.RedrawAxisY();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(yString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Yaxis)));
             Assert.AreEqual(1, graphData.canvasElementList.Count);
         }
 
@@ -68,12 +65,11 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string yString = typeof(GraphData).GetField("elementName_Yaxis").GetValue(null).ToString();
             graphData.RedrawAxisY();
 
             graphData.RedrawAxisY();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(yString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Yaxis)));
             Assert.AreEqual(1, graphData.canvasElementList.Count);
         }
 
@@ -82,13 +78,11 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string xString = typeof(GraphData).GetField("elementName_Xaxis").GetValue(null).ToString();
-            string yString = typeof(GraphData).GetField("elementName_Yaxis").GetValue(null).ToString();
 
             graphData.RedrawAxes();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(xString));
-            Assert.IsTrue(graphData.canvasElementList.Contains(yString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Xaxis)));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Yaxis)));
             Assert.AreEqual(2, graphData.canvasElementList.Count);
         }
 
@@ -97,14 +91,12 @@ namespace AlgorithmTests.UnitTests
         {
             Canvas canvas = new Canvas();
             GraphData graphData = new GraphData(canvas);
-            string xString = typeof(GraphData).GetField("elementName_Xaxis").GetValue(null).ToString();
-            string yString = typeof(GraphData).GetField("elementName_Yaxis").GetValue(null).ToString();
             graphData.RedrawAxes();
 
             graphData.RedrawAxes();
 
-            Assert.IsTrue(graphData.canvasElementList.Contains(xString));
-            Assert.IsTrue(graphData.canvasElementList.Contains(yString));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Xaxis)));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Yaxis)));
             Assert.AreEqual(2, graphData.canvasElementList.Count);
         }
 
@@ -119,9 +111,67 @@ namespace AlgorithmTests.UnitTests
             //If there is no error, this test is a success
         }
 
-        // Test if CreateDatasets creates one averageline for one dataset
-        // Test if CreateDatasets creates one datapoint for one dataset with one point
-        // Test if CreateDatasets creates two datapoint for one dataset with two points
+        [TestMethod]
+        public void CreateDatasets_OneDatasetFound_PlotsOneAverageLine()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);      
+            graphData.canvasData.AddDataset(new double[] { 0.0, 1.0, 2.0 });
+            graphData.canvasData.Recalculate();
+
+            graphData.CreateDatasets();
+
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Average, 0)));
+        }
+
+        [TestMethod]
+        public void CreateDatasets_OneDatasetFound_SyncsListAndDictionary()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);
+            graphData.canvasData.AddDataset(new double[] { 0.0, 1.0, 2.0 });
+            graphData.canvasData.Recalculate();
+
+            graphData.CreateDatasets();
+
+            Assert.AreEqual(graphData.canvasElementList.Count, graphData.canvasElementNames.Count);
+        }
+
+        [TestMethod]
+        public void CreateDatasets_OneDatasetOneElement_PlotsOnePoint()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);
+            graphData.canvasData.AddDataset(new double[] { 0.0 });
+            graphData.canvasData.Recalculate();
+
+            graphData.CreateDatasets();
+
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Point, 0, 0)));
+            // X-axis, Y-axis, one polyline for the dataset, one polyline for the average, one datapoint
+            Assert.AreEqual(5, graphData.canvasElementList.Count); 
+        }
+
+        [TestMethod]
+        public void CreateDatasets_TwoDatasetsTwoElements_PlotsFourPoints()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);
+            graphData.canvasData.AddDataset(new double[] { 0.0 , 1.0});
+            graphData.canvasData.AddDataset(new double[] { 0.0 , 1.0 });
+            graphData.canvasData.Recalculate();
+
+            graphData.CreateDatasets();
+
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Point, 0, 0)));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Point, 0, 1)));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Point, 1, 0)));
+            Assert.IsTrue(graphData.canvasElementList.Contains(graphData.GetFormattedString(GraphData.GraphElementTypes.Point, 1, 1)));
+
+            // X-axis, Y-axis, two polylines for the dataset, two polylines for the averages, four datapoint
+            Assert.AreEqual(10, graphData.canvasElementList.Count);
+        }
+
         // Test if CreateDatasets results in a canvasElementList List and canvasElementNames Dictionary of the same size
     }
 }

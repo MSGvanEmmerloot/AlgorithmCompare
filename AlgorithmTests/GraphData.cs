@@ -10,16 +10,12 @@ namespace AlgorithmTests
 {
     public class GraphData
     {     
+        public enum GraphElementTypes { Xaxis, Yaxis, Graph, Average, Point}
+
         public List<string> canvasElementList { get; private set; } = new List<string>();
         public Dictionary<string, int> canvasElementNames { get; private set; } = new Dictionary<string, int>();
 
         public CanvasData canvasData;
-
-        public const string elementName_Xaxis = "X-Axis";
-        public const string elementName_Yaxis = "Y-Axis";
-        public const string elementName_Graph = "Graph ";
-        public const string elementName_Average = "Average ";
-        public const string elementName_Point = "Point ";
 
         public bool autoResize = true;
         public bool plotPolyline = true;
@@ -118,6 +114,24 @@ namespace AlgorithmTests
         {
             canvasData = new CanvasData(_canvas);
         }
+
+        public string GetFormattedString(GraphElementTypes elementType, int datasetIndex=0, int pointIndex=0)
+        {
+            switch (elementType)
+            {
+                case GraphElementTypes.Xaxis:
+                    return "X-Axis";
+                case GraphElementTypes.Yaxis:
+                    return "Y-Axis";
+                case GraphElementTypes.Graph:
+                    return "Graph " + datasetIndex;
+                case GraphElementTypes.Average:
+                    return "Average " + datasetIndex;
+                case GraphElementTypes.Point:
+                    return "Point " + datasetIndex + " " + pointIndex;
+            }
+            return null;
+        }
         
         public void DrawCustomGraph()
         {
@@ -144,11 +158,13 @@ namespace AlgorithmTests
             xaxis_path.Stroke = Brushes.Black;
             xaxis_path.Data = xaxis_geom;
 
-            if (canvasElementList.Contains(elementName_Xaxis))
+            string xName = GetFormattedString(GraphElementTypes.Xaxis);
+
+            if (canvasElementList.Contains(xName))
             {
-                if (canvasElementNames.Keys.Contains(elementName_Xaxis))
+                if (canvasElementNames.Keys.Contains(xName))
                 {
-                    int elementIndex = canvasElementNames[elementName_Xaxis];
+                    int elementIndex = canvasElementNames[xName];
                     if (canvasData.canvas.Children.Count > elementIndex)
                     {
                         canvasData.canvas.Children.RemoveAt(elementIndex);
@@ -157,14 +173,14 @@ namespace AlgorithmTests
                     else
                     {
                         canvasData.canvas.Children.Add(xaxis_path);
-                        canvasElementList.Add(elementName_Xaxis);
+                        canvasElementList.Add(xName);
                     }
                 }
             }
             else
             {
                 canvasData.canvas.Children.Add(xaxis_path);
-                canvasElementList.Add(elementName_Xaxis);
+                canvasElementList.Add(xName);
             }
         }
 
@@ -185,10 +201,12 @@ namespace AlgorithmTests
             yaxis_path.Stroke = Brushes.Black;
             yaxis_path.Data = yaxis_geom;
 
-            if (canvasElementList.Contains(elementName_Yaxis))
+            string yName = GetFormattedString(GraphElementTypes.Yaxis);
+
+            if (canvasElementList.Contains(yName))
             {
-                if (canvasElementNames.Keys.Contains(elementName_Yaxis)) {
-                    int elementIndex = canvasElementNames[elementName_Yaxis];
+                if (canvasElementNames.Keys.Contains(yName)) {
+                    int elementIndex = canvasElementNames[yName];
                     if(canvasData.canvas.Children.Count> elementIndex)
                     {
                         canvasData.canvas.Children.RemoveAt(elementIndex);
@@ -197,14 +215,14 @@ namespace AlgorithmTests
                     else
                     {
                         canvasData.canvas.Children.Add(yaxis_path);
-                        canvasElementList.Add(elementName_Yaxis);
+                        canvasElementList.Add(yName);
                     }
                 }
             }
             else
             {
                 canvasData.canvas.Children.Add(yaxis_path);
-                canvasElementList.Add(elementName_Yaxis);
+                canvasElementList.Add(yName);
             }
         }
 
@@ -237,21 +255,26 @@ namespace AlgorithmTests
                 polyline.StrokeThickness = 1;
                 polyline.Stroke = canvasData.brushes[d];
                 polyline.Points = points;
-                if (dataSetVisible[d] == false || !plotPolyline)
+                if (dataSetVisible.Count > d)
                 {
-                    polyline.Visibility = Visibility.Hidden;
+                    if (dataSetVisible[d] == false || !plotPolyline)
+                    {
+                        polyline.Visibility = Visibility.Hidden;
+                    }
                 }
 
-                if (canvasElementList.Contains(elementName_Graph + d))
+                string graphName = GetFormattedString(GraphElementTypes.Graph, d);
+
+                if (canvasElementList.Contains(graphName))
                 {
-                    int elementIndex = canvasElementNames[elementName_Graph + d];
+                    int elementIndex = canvasElementNames[graphName];
                     canvasData.canvas.Children.RemoveAt(elementIndex);
                     canvasData.canvas.Children.Insert(elementIndex, polyline);
                 }
                 else
                 {
                     canvasData.canvas.Children.Add(polyline);
-                    canvasElementList.Add(elementName_Graph + d);
+                    canvasElementList.Add(graphName);
                 }
 
                 AddIndividualDataPoints(d, points);
@@ -279,21 +302,26 @@ namespace AlgorithmTests
                 polylineAverage.StrokeThickness = 2;
                 polylineAverage.Stroke = canvasData.brushesAverage[d];
                 polylineAverage.Points = pointsAverage;
-                if (dataSetVisible[d] == false)
+                if (dataSetVisible.Count > d)
                 {
-                    polylineAverage.Visibility = Visibility.Hidden;
+                    if (dataSetVisible[d] == false)
+                    {
+                        polylineAverage.Visibility = Visibility.Hidden;
+                    }
                 }
 
-                if (canvasElementList.Contains(elementName_Average + d))
+                string averageName = GetFormattedString(GraphElementTypes.Average, d);
+
+                if (canvasElementList.Contains(averageName))
                 {
-                    int elementIndex = canvasElementNames[elementName_Average + d];
+                    int elementIndex = canvasElementNames[averageName];
                     canvasData.canvas.Children.RemoveAt(elementIndex);
                     canvasData.canvas.Children.Insert(elementIndex, polylineAverage);
                 }
                 else
                 {
                     canvasData.canvas.Children.Add(polylineAverage);
-                    canvasElementList.Add(elementName_Average + d);
+                    canvasElementList.Add(averageName);
                 }
             }
 
@@ -312,12 +340,15 @@ namespace AlgorithmTests
             for(int p=0; p<points.Count; p++)
             {
                 Ellipse ellipse = CreateEllipse(datasetIndex, points[p].X, points[p].Y);
-                if (dataSetVisible[datasetIndex] == false)
+                if (dataSetVisible.Count > datasetIndex)
                 {
-                    ellipse.Visibility = Visibility.Hidden;
+                    if (dataSetVisible[datasetIndex] == false)
+                    {
+                        ellipse.Visibility = Visibility.Hidden;
+                    }
                 }
 
-                string name = elementName_Point + datasetIndex + " " + p;
+                string name = GetFormattedString(GraphElementTypes.Point, datasetIndex, p);
 
                 if (canvasElementList.Contains(name))
                 {
@@ -397,10 +428,11 @@ namespace AlgorithmTests
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
-                if(!canvasElementNames.ContainsKey(elementName_Graph + d)) { break; }
+                string graphName = GetFormattedString(GraphElementTypes.Graph, d);
+                if (!canvasElementNames.ContainsKey(graphName)) { break; }
 
                 //Console.WriteLine("canvasElementNames[" + elementName_Graph + " + " + d + "] = " + canvasElementNames[elementName_Graph + d]);
-                PointCollection points = ((Polyline)canvasData.canvas.Children[canvasElementNames[elementName_Graph + d]]).Points;
+                PointCollection points = ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Points;
 
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
@@ -410,9 +442,9 @@ namespace AlgorithmTests
 
                     Point newPoint = new Point(xCoord, yCoord);
 
-                    if (i < points.Count)//if (i < points.Count - 1)
+                    if (i < points.Count)
                     {
-                        ((Polyline)canvasData.canvas.Children[canvasElementNames[elementName_Graph + d]]).Points[i] = newPoint;
+                        ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Points[i] = newPoint;
                         //Console.WriteLine("Modified " + (elementName_Graph + d) + " point " + i + " (element " + canvasElementNames[elementName_Graph + d] + ")");
                     }
                 }
@@ -424,7 +456,7 @@ namespace AlgorithmTests
 
                 for (int p = 0; p < canvasData.maxValueX; p++)
                 {
-                    string name = elementName_Point + d + " " + p;
+                    string name = GetFormattedString(GraphElementTypes.Point, d, p);
                     if (!canvasElementNames.ContainsKey(name)) { break; }
                     
                     double xCoord = canvasData.xmin + (p * canvasData.xStep);
@@ -444,9 +476,10 @@ namespace AlgorithmTests
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushesAverage.Length) { break; }
-                if (!canvasElementNames.ContainsKey(elementName_Average + d)) { break; }
+                string averageName = GetFormattedString(GraphElementTypes.Average, d);
+                if (!canvasElementNames.ContainsKey(averageName)) { break; }
 
-                PointCollection pointsAverage = ((Polyline)canvasData.canvas.Children[canvasElementNames[elementName_Average + d]]).Points;
+                PointCollection pointsAverage = ((Polyline)canvasData.canvas.Children[canvasElementNames[averageName]]).Points;
 
                 double sumValue = 0;
                 for (int i = 0; i < canvasData.maxValueX; i++)
@@ -463,9 +496,9 @@ namespace AlgorithmTests
 
                     Point newPoint = new Point(xCoord, yCoord);
 
-                    if (i < pointsAverage.Count)//if (i < pointsAverage.Count - 1)
+                    if (i < pointsAverage.Count)
                     {
-                        ((Polyline)canvasData.canvas.Children[canvasElementNames[elementName_Average + d]]).Points[i] = newPoint;
+                        ((Polyline)canvasData.canvas.Children[canvasElementNames[averageName]]).Points[i] = newPoint;
                     }
                 }
             }
@@ -473,8 +506,8 @@ namespace AlgorithmTests
 
         public void ToggleVisible(int dataSetIndex, bool visible)
         {
-            string graphName = elementName_Graph + dataSetIndex;
-            string averageName = elementName_Average + dataSetIndex;
+            string graphName = GetFormattedString(GraphElementTypes.Graph, dataSetIndex);
+            string averageName = GetFormattedString(GraphElementTypes.Average, dataSetIndex);
             Visibility visibility = Visibility.Visible;
 
             if (dataSetIndex >= dataSetVisible.Count) { return; }
@@ -500,7 +533,7 @@ namespace AlgorithmTests
             // Points            
             for (int p = 0; p < canvasData.dataSets[dataSetIndex].Length; p++)
             {
-                string ellipseName = elementName_Point + dataSetIndex + " " + p;
+                string ellipseName = GetFormattedString(GraphElementTypes.Point, dataSetIndex, p);
 
                 if (canvasElementNames.Keys.Contains(ellipseName))
                 {
@@ -540,9 +573,10 @@ namespace AlgorithmTests
             {
                 if (dataSetVisible[d])
                 {
-                    if (canvasElementList.Contains(elementName_Graph + d))
+                    string graphName = GetFormattedString(GraphElementTypes.Graph, d);
+                    if (canvasElementList.Contains(graphName))
                     {
-                        ((Polyline)canvasData.canvas.Children[canvasElementNames[elementName_Graph + d]]).Visibility = visibility;
+                        ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Visibility = visibility;
                     }
                 }
             }
