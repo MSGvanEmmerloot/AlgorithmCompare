@@ -146,14 +146,11 @@ namespace AlgorithmTests
         public void RedrawAxisX()
         {
             GeometryGroup xaxis_geom = new GeometryGroup();
-            xaxis_geom.Children.Add(new LineGeometry(
-                new Point(0, canvasData.ymax), new Point(canvasData.graphWidth, canvasData.ymax)));
-            for (double x = canvasData.xmin + canvasData.xStep;
-                x <= canvasData.graphWidth; x += canvasData.xStep)
+            xaxis_geom.Children.Add(new LineGeometry(new Point(0, canvasData.ymax), new Point(canvasData.graphWidth, canvasData.ymax)));
+
+            for (double x = canvasData.xmin + canvasData.xStep; x <= canvasData.graphWidth; x += canvasData.xStep)
             {
-                xaxis_geom.Children.Add(new LineGeometry(
-                    new Point(x, canvasData.ymax - canvasData.margin / 2),
-                    new Point(x, canvasData.ymax + canvasData.margin / 2)));
+                xaxis_geom.Children.Add(new LineGeometry(new Point(x, canvasData.ymax - canvasData.margin / 2), new Point(x, canvasData.ymax + canvasData.margin / 2)));
             }
 
             Path xaxis_path = new Path();
@@ -170,33 +167,22 @@ namespace AlgorithmTests
                     int elementIndex = canvasElementNames[xName];
                     if (canvasData.canvas.Children.Count > elementIndex)
                     {
-                        canvasData.canvas.Children.RemoveAt(elementIndex);
-                        canvasData.canvas.Children.Insert(elementIndex, xaxis_path);
+                        ReplaceElement(elementIndex, xaxis_path);
                     }
-                    else
-                    {
-                        canvasData.canvas.Children.Add(xaxis_path);
-                        canvasElementList.Add(xName);
-                    }
+                    else AddElement(xName, xaxis_path);
                 }
             }
-            else
-            {
-                canvasData.canvas.Children.Add(xaxis_path);
-                canvasElementList.Add(xName);
-            }
+            else AddElement(xName, xaxis_path);
         }
 
         public void RedrawAxisY()
         {
             GeometryGroup yaxis_geom = new GeometryGroup();
-            yaxis_geom.Children.Add(new LineGeometry(
-                new Point(canvasData.xmin, 0), new Point(canvasData.xmin, canvasData.graphHeight)));
+            yaxis_geom.Children.Add(new LineGeometry(new Point(canvasData.xmin, 0), new Point(canvasData.xmin, canvasData.graphHeight)));
+
             for (double y = 0; y <= canvasData.graphHeight; y += canvasData.yStep)
             {
-                yaxis_geom.Children.Add(new LineGeometry(
-                    new Point(canvasData.xmin - canvasData.margin / 2, y),
-                    new Point(canvasData.xmin + canvasData.margin / 2, y)));
+                yaxis_geom.Children.Add(new LineGeometry(new Point(canvasData.xmin - canvasData.margin / 2, y), new Point(canvasData.xmin + canvasData.margin / 2, y)));
             }
 
             Path yaxis_path = new Path();
@@ -210,23 +196,26 @@ namespace AlgorithmTests
             {
                 if (canvasElementNames.Keys.Contains(yName)) {
                     int elementIndex = canvasElementNames[yName];
-                    if(canvasData.canvas.Children.Count> elementIndex)
+                    if(canvasData.canvas.Children.Count > elementIndex)
                     {
-                        canvasData.canvas.Children.RemoveAt(elementIndex);
-                        canvasData.canvas.Children.Insert(elementIndex, yaxis_path);
+                        ReplaceElement(elementIndex, yaxis_path);
                     }
-                    else
-                    {
-                        canvasData.canvas.Children.Add(yaxis_path);
-                        canvasElementList.Add(yName);
-                    }
+                    else AddElement(yName, yaxis_path);
                 }
             }
-            else
-            {
-                canvasData.canvas.Children.Add(yaxis_path);
-                canvasElementList.Add(yName);
-            }
+            else AddElement(yName, yaxis_path);
+        }
+
+        public void ReplaceElement(int elementIndex, UIElement element)
+        {
+            canvasData.canvas.Children.RemoveAt(elementIndex);
+            canvasData.canvas.Children.Insert(elementIndex, element);
+        }
+
+        public void AddElement(string elementName, UIElement element)
+        {
+            canvasElementList.Add(elementName);
+            canvasData.canvas.Children.Add(element);            
         }
 
         public void RedrawAxes()
@@ -273,16 +262,9 @@ namespace AlgorithmTests
 
                 if (canvasElementList.Contains(graphName))
                 {
-                    int elementIndex = canvasElementNames[graphName];
-
-                    canvasData.canvas.Children.RemoveAt(elementIndex);
-                    canvasData.canvas.Children.Insert(elementIndex, polyline);
+                    ReplaceElement(canvasElementNames[graphName], polyline);
                 }
-                else
-                {
-                    canvasData.canvas.Children.Add(polyline);
-                    canvasElementList.Add(graphName);
-                }
+                else AddElement(graphName, polyline);
 
                 AddIndividualDatapoints(d, points);
             }
@@ -322,15 +304,9 @@ namespace AlgorithmTests
 
                 if (canvasElementList.Contains(averageName))
                 {
-                    int elementIndex = canvasElementNames[averageName];
-                    canvasData.canvas.Children.RemoveAt(elementIndex);
-                    canvasData.canvas.Children.Insert(elementIndex, polylineAverage);
+                    ReplaceElement(canvasElementNames[averageName], polylineAverage);
                 }
-                else
-                {
-                    canvasData.canvas.Children.Add(polylineAverage);
-                    canvasElementList.Add(averageName);
-                }
+                else AddElement(averageName, polylineAverage);
             }
 
             for (int i = 0; i < canvasElementList.Count; i++)
@@ -360,15 +336,9 @@ namespace AlgorithmTests
 
                 if (canvasElementList.Contains(name))
                 {
-                    int elementIndex = canvasElementNames[name];
-                    canvasData.canvas.Children.RemoveAt(elementIndex);
-                    canvasData.canvas.Children.Insert(elementIndex, ellipse);
+                    ReplaceElement(canvasElementNames[name], ellipse);
                 }
-                else
-                {
-                    canvasData.canvas.Children.Add(ellipse);
-                    canvasElementList.Add(name);
-                }
+                else AddElement(name, ellipse);
             }
         }
 
@@ -411,10 +381,7 @@ namespace AlgorithmTests
                     {
                         double curY = canvasData.dataSets[i][j];
 
-                        if (curY > maxY)
-                        {
-                            maxY = curY;
-                        }
+                        if (curY > maxY) { maxY = curY; }
                     }
                 }
             }
@@ -472,8 +439,7 @@ namespace AlgorithmTests
 
                     Visibility visibility = canvasData.canvas.Children[canvasElementNames[name]].Visibility;
 
-                    canvasData.canvas.Children.RemoveAt(canvasElementNames[name]);
-                    canvasData.canvas.Children.Insert(canvasElementNames[name], pointEllipse);
+                    ReplaceElement(canvasElementNames[name], pointEllipse);
                     canvasData.canvas.Children[canvasElementNames[name]].Visibility = visibility;
                 }
             }
@@ -518,10 +484,7 @@ namespace AlgorithmTests
             if (dataSetIndex >= dataSetVisible.Count) { return; }
             dataSetVisible[dataSetIndex] = visible;
 
-            if (!visible)
-            {
-                visibility = Visibility.Hidden;
-            }
+            if (!visible) { visibility = Visibility.Hidden; }
 
             // Polylines
             if (canvasElementNames.Keys.Contains(graphName) && plotPolyline)
@@ -542,26 +505,17 @@ namespace AlgorithmTests
 
                 if (canvasElementNames.Keys.Contains(ellipseName))
                 {
-                    //Console.WriteLine("canvasElementNames.Keys.Contains(" + ellipseName + ") returned true");
                     canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility = visibility;
-                    //Console.WriteLine("Child " + canvasElementNames[ellipseName] + " visibility = " + canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility);
                 }
-                //else Console.WriteLine("canvasElementNames.Keys.Contains("+ellipseName+") returned false");
             }
 
-            if (autoResize)
-            {
-                RescaleCanvas();
-            }
+            if (autoResize) { RescaleCanvas(); }
         }
 
         public void ToggleAutoResize(bool resize)
         {
             autoResize = resize;
-            if (autoResize)
-            {
-                RescaleCanvas();
-            }
+            if (autoResize) { RescaleCanvas(); }
         }
 
         public void PlotPolyline(bool plot)
