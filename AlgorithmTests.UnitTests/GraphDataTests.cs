@@ -172,6 +172,58 @@ namespace AlgorithmTests.UnitTests
             Assert.AreEqual(10, graphData.canvasElementList.Count);
         }
 
-        // Test if CreateDatasets results in a canvasElementList List and canvasElementNames Dictionary of the same size
+        [TestMethod]
+        public void AddIndividualDatapoints_ValidDatasetAndTwoPoints_AddsTwoDatapoints()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);
+            PointCollection points = new PointCollection();
+            for (int i = 0; i < 2; i++) { points.Add(new Point(i, 0)); }
+
+            graphData.AddIndividualDatapoints(0, points);
+
+            Assert.AreEqual(2, graphData.canvasElementList.Count);
+        }
+
+        [TestMethod]
+        public void AddAlgorithmsDataToGraph_TwoMeasurementsTwoAlgorithms_AddsTwoDatasets()
+        {
+            Canvas canvas = new Canvas();
+            GraphData graphData = new GraphData(canvas);
+            List<double[]> performances = new List<double[]>();
+            performances.Add(new double[] { 1, 2 });
+            performances.Add(new double[] { 3, 4 });
+
+            graphData.AddAlgorithmsDataToGraph(performances);
+
+            Assert.AreEqual(2, graphData.canvasData.dataSets.Count);
+            Assert.AreEqual(2, graphData.canvasData.dataSets[0].Length);
+            Assert.AreEqual(2, graphData.canvasData.dataSets[1].Length);
+        }
+
+        [TestMethod]
+        public void RecalculateDataplot_OneDataset_UpdatesAllValues()
+        {
+            Canvas canvas = new Canvas {Width = 100.0, Height = 100.0};
+            GraphData graphData = new GraphData(canvas);
+            graphData.canvasData.AddDataset(new double[] { 10.0 , 20.0, 30.0 });
+            graphData.canvasData.Recalculate();
+            graphData.CreateDatasets();
+            PointCollection oldPoints = ((Polyline)graphData.canvasData.canvas.Children[graphData.canvasElementNames[graphData.GetFormattedString(GraphData.GraphElementTypes.Graph, 0)]]).Points;
+            List<double> oldVals = new List<double>();
+            for (int i = 0; i < oldPoints.Count; i++) { oldVals.Add(oldPoints[i].Y); }
+            graphData.canvasData.ResetDatasets();
+            graphData.canvasData.AddDataset(new double[] { 20.0, 10.0, 30.0 });
+
+            graphData.RecalculateDataplot();
+            PointCollection newPoints = ((Polyline)graphData.canvasData.canvas.Children[graphData.canvasElementNames[graphData.GetFormattedString(GraphData.GraphElementTypes.Graph, 0)]]).Points;
+            List<double> newVals = new List<double>();
+            for (int i=0; i<newPoints.Count; i++){ newVals.Add(newPoints[i].Y); }
+
+            // The y-axis is in the top left of the canvas, so closer to the "normal" x-axis actually means a bigger y-value
+            Assert.IsTrue(newVals[0] < oldVals[0]);
+            Assert.IsTrue(newVals[1] > oldVals[1]);
+            Assert.IsTrue(newVals[2] == oldVals[2]);
+        }
     }
 }

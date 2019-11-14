@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -244,11 +245,14 @@ namespace AlgorithmTests
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
+
                 PointCollection points = new PointCollection();
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
-                    points.Add(new Point(xCoord, canvasData.ymax - (canvasData.dataSets[d][i] * canvasData.yScale)));
+                    double yCoord = canvasData.ymax - (canvasData.dataSets[d][i] * canvasData.yScale);
+
+                    points.Add(new Point(xCoord, yCoord));
                 }
 
                 Polyline polyline = new Polyline();
@@ -268,6 +272,7 @@ namespace AlgorithmTests
                 if (canvasElementList.Contains(graphName))
                 {
                     int elementIndex = canvasElementNames[graphName];
+
                     canvasData.canvas.Children.RemoveAt(elementIndex);
                     canvasData.canvas.Children.Insert(elementIndex, polyline);
                 }
@@ -277,13 +282,14 @@ namespace AlgorithmTests
                     canvasElementList.Add(graphName);
                 }
 
-                AddIndividualDataPoints(d, points);
+                AddIndividualDatapoints(d, points);
             }
             
             // Calculate averages
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushesAverage.Length) { break; }
+
                 PointCollection pointsAverage = new PointCollection();
                 double sumValue = 0;
                 for (int i = 0; i < canvasData.maxValueX; i++)
@@ -335,7 +341,7 @@ namespace AlgorithmTests
             }
         }
 
-        public void AddIndividualDataPoints(int datasetIndex, PointCollection points)
+        public void AddIndividualDatapoints(int datasetIndex, PointCollection points)
         {
             for(int p=0; p<points.Count; p++)
             {
@@ -383,7 +389,7 @@ namespace AlgorithmTests
 
         public void AddAlgorithmsDataToGraph(List<double[]> algorithmPerformances)
         {
-            int algorithmCount = ArrayCompare.algorithmNames.Count;
+            int algorithmCount = algorithmPerformances.Count;
 
             canvasData.ResetDatasets();
 
@@ -402,7 +408,7 @@ namespace AlgorithmTests
                     for (int j = 0; j < canvasData.dataSets[i].Length; j++)
                     {
                         double curY = canvasData.dataSets[i][j];
-                        //Console.WriteLine("Calculated value from graphPoints[" + j + "] of dataset " + i + " = " + curY);
+
                         if (curY > maxY)
                         {
                             maxY = curY;
@@ -428,24 +434,22 @@ namespace AlgorithmTests
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
+
                 string graphName = GetFormattedString(GraphElementTypes.Graph, d);
                 if (!canvasElementNames.ContainsKey(graphName)) { break; }
-
-                //Console.WriteLine("canvasElementNames[" + elementName_Graph + " + " + d + "] = " + canvasElementNames[elementName_Graph + d]);
+                
                 PointCollection points = ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Points;
 
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
                     double yCoord = canvasData.ymax - (canvasData.dataSets[d][i] * canvasData.yScale);
-                    Console.WriteLine("New point " + d + " + " + i + " coords: (" + xCoord + " , " + yCoord + ")");
 
                     Point newPoint = new Point(xCoord, yCoord);
-
+                    
                     if (i < points.Count)
                     {
                         ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Points[i] = newPoint;
-                        //Console.WriteLine("Modified " + (elementName_Graph + d) + " point " + i + " (element " + canvasElementNames[elementName_Graph + d] + ")");
                     }
                 }
             }
@@ -461,7 +465,6 @@ namespace AlgorithmTests
                     
                     double xCoord = canvasData.xmin + (p * canvasData.xStep);
                     double yCoord = canvasData.ymax - (canvasData.dataSets[d][p] * canvasData.yScale);
-                    Console.WriteLine("New ellipse " + d + " + " + p + " coords: (" + xCoord + " , " + yCoord + ")");
 
                     Ellipse pointEllipse = CreateEllipse(d, xCoord, yCoord);
 
@@ -476,6 +479,7 @@ namespace AlgorithmTests
             for (int d = 0; d < canvasData.dataSets.Count; d++)
             {
                 if (d >= canvasData.brushesAverage.Length) { break; }
+
                 string averageName = GetFormattedString(GraphElementTypes.Average, d);
                 if (!canvasElementNames.ContainsKey(averageName)) { break; }
 
@@ -492,7 +496,6 @@ namespace AlgorithmTests
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
                     double yCoord = canvasData.ymax - (averageValue * canvasData.yScale);
-                    //Console.WriteLine("New average point " + d + " + " + i + " coords: (" + xCoord + " , " + yCoord + ")");
 
                     Point newPoint = new Point(xCoord, yCoord);
 
@@ -574,6 +577,7 @@ namespace AlgorithmTests
                 if (dataSetVisible[d])
                 {
                     string graphName = GetFormattedString(GraphElementTypes.Graph, d);
+
                     if (canvasElementList.Contains(graphName))
                     {
                         ((Polyline)canvasData.canvas.Children[canvasElementNames[graphName]]).Visibility = visibility;
@@ -595,7 +599,7 @@ namespace AlgorithmTests
                     for (int j = 0; j < canvasData.dataSets[i].Length; j++)
                     {
                         double curY = canvasData.dataSets[i][j];
-                        //Console.WriteLine("Calculated value from graphPoints[" + j + "] of dataset " + i + " = " + curY);
+
                         if (curY > maxY)
                         {
                             maxY = curY;
