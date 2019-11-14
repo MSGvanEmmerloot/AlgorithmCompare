@@ -26,6 +26,7 @@ namespace AlgorithmTests
         bool toUpdate = true;
         
         public GraphData graphData;
+        public List<CheckBox> algorithmSelectCheckBoxes = new List<CheckBox>();
 
         public MainWindow()
         {
@@ -48,9 +49,23 @@ namespace AlgorithmTests
                 cvAlgorithmPerformances.GroupDescriptions.Add(new PropertyGroupDescription("algorithmName"));
             }
 
-            graphData = new GraphData(canGraph);
+            AddCheckBoxesToList();
 
+            graphData = new GraphData(canGraph);
             graphData.DrawCustomGraph();
+        }
+
+        private void AddCheckBoxesToList()
+        {
+            algorithmSelectCheckBoxes.Add(checkBoxOne);
+            algorithmSelectCheckBoxes.Add(checkBoxTwo);
+            algorithmSelectCheckBoxes.Add(checkBoxThree);
+            algorithmSelectCheckBoxes.Add(checkBoxFour);
+            algorithmSelectCheckBoxes.Add(checkBoxFive);
+            algorithmSelectCheckBoxes.Add(checkBoxSix);
+            algorithmSelectCheckBoxes.Add(checkBoxSeven);
+            algorithmSelectCheckBoxes.Add(checkBoxEight);
+            algorithmSelectCheckBoxes.Add(checkBoxNine);
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -69,26 +84,32 @@ namespace AlgorithmTests
 
         public void AddAlgorithmsDataToGraph()
         {
-            List<double[]> algorithmPerformanceList = new List<double[]>();            
+            List<double[]> algorithmPerformanceList = new List<double[]>();
+
+            for(int c = 0; c< algorithmSelectCheckBoxes.Count; c++)
+            {
+                algorithmSelectCheckBoxes[c].Visibility = Visibility.Hidden;
+            }
 
             // Get data of every algorithm for a single array
             for(int i=0; i< ArrayCompare.algorithmNames.Count; i++)
             {
                 algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
+
+                if (algorithmSelectCheckBoxes.Count > i)
+                {
+                    algorithmSelectCheckBoxes[i].Content = ArrayCompare.algorithmNames[i];
+                    if (graphData.canvasData.brushes.Length > i)
+                    {
+                        algorithmSelectCheckBoxes[i].Background = graphData.canvasData.brushes[i];
+                    }
+                    algorithmSelectCheckBoxes[i].Visibility = Visibility.Visible;
+                }
             }
-
-            checkBoxOne.Content = ArrayCompare.algorithmNames[0];
-            checkBoxOne.Background = graphData.canvasData.brushes[0];
-
-            checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
-            checkBoxTwo.Background = graphData.canvasData.brushes[1];
-
-            checkBoxThree.Content = ArrayCompare.algorithmNames[2];
-            checkBoxThree.Background = graphData.canvasData.brushes[2];
-
+            
             graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
         }
-        
+
         //private void UpdateDataGridBackgroundColor(object sender, EventArgs e)
         //{
         //    if (toUpdate)
@@ -120,30 +141,19 @@ namespace AlgorithmTests
         //    }
         //}
 
-        private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
+        private void CheckBoxAlgorithmSelect_Click(object sender, RoutedEventArgs e)
         {
-            graphData.ToggleVisible(0, (checkBoxOne.IsChecked == true));
+            int index = algorithmSelectCheckBoxes.FindIndex(x => x.Equals(sender));
+
+            if(index == -1) { return; }
+            
+            graphData.ToggleVisible(index, ((CheckBox)sender).IsChecked == true);
         }
 
-        private void CheckBoxTwo_Click(object sender, RoutedEventArgs e)
-        {
-            graphData.ToggleVisible(1, (checkBoxTwo.IsChecked == true));
-        }
-
-        private void CheckBoxThree_Click(object sender, RoutedEventArgs e)
-        {
-            graphData.ToggleVisible(2, (checkBoxThree.IsChecked == true));
-        }
-
-        private void CheckBoxFour_Click(object sender, RoutedEventArgs e)
-        {
-            //graphData.ToggleVisible(2, (checkBoxFour.IsChecked == true));
-        }
-
-        private void CheckBoxFive_Click(object sender, RoutedEventArgs e)
-        {
-            //graphData.ToggleVisible(2, (checkBoxFive.IsChecked == true));
-        }
+        //private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
+        //{
+        //    graphData.ToggleVisible(0, (checkBoxOne.IsChecked == true));
+        //}
 
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {

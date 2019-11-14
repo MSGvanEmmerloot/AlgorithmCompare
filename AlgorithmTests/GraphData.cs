@@ -44,8 +44,10 @@ namespace AlgorithmTests
 
             public List<double[]> dataSets { get; private set; } = new List<double[]>();
 
-            public Brush[] brushes { get; private set; } = { Brushes.Red, Brushes.Green, Brushes.Blue };
-            public Brush[] brushesAverage { get; private set; } = { Brushes.Crimson, Brushes.DarkOliveGreen, Brushes.Navy };
+            public Brush[] brushes { get; private set; } = 
+                { Brushes.Red, Brushes.Green, Brushes.Indigo, Brushes.Orange, Brushes.Blue, Brushes.Violet, Brushes.Yellow };
+            public Brush[] brushesAverage { get; private set; } = 
+                { Brushes.Crimson, Brushes.DarkOliveGreen, Brushes.Purple, Brushes.DarkOrange, Brushes.Navy, Brushes.DeepPink, Brushes.Goldenrod };
 
             public CanvasData(Canvas _canvas)
             {
@@ -395,7 +397,7 @@ namespace AlgorithmTests
 
             for (int i = 0; i < algorithmCount; i++)
             {
-                if (i > 2) { break; }
+                //if (i > 2) { break; }
                 canvasData.AddDataset(algorithmPerformances[i]);
                 dataSetVisible.Add(true);
             }
@@ -540,11 +542,11 @@ namespace AlgorithmTests
 
                 if (canvasElementNames.Keys.Contains(ellipseName))
                 {
-                    Console.WriteLine("canvasElementNames.Keys.Contains(" + ellipseName + ") returned true");
+                    //Console.WriteLine("canvasElementNames.Keys.Contains(" + ellipseName + ") returned true");
                     canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility = visibility;
-                    Console.WriteLine("Child " + canvasElementNames[ellipseName] + " visibility = " + canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility);
+                    //Console.WriteLine("Child " + canvasElementNames[ellipseName] + " visibility = " + canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility);
                 }
-                else Console.WriteLine("canvasElementNames.Keys.Contains("+ellipseName+") returned false");
+                //else Console.WriteLine("canvasElementNames.Keys.Contains("+ellipseName+") returned false");
             }
 
             if (autoResize)

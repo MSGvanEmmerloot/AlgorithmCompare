@@ -225,5 +225,22 @@ namespace AlgorithmTests.UnitTests
             Assert.IsTrue(newVals[1] > oldVals[1]);
             Assert.IsTrue(newVals[2] == oldVals[2]);
         }
+
+        [TestMethod]
+        public void ToggleVisible_ValidDatasetIndex_SetsVisibilityToFalse()
+        {
+            Canvas canvas = new Canvas();// { Width = 100.0, Height = 100.0 };
+            GraphData graphData = new GraphData(canvas);
+            graphData.canvasData.AddDataset(new double[] { 10.0, 20.0, 30.0 });
+            graphData.dataSetVisible.Add(true);
+            graphData.canvasData.Recalculate();
+            graphData.CreateDatasets();
+
+            graphData.ToggleVisible(0, false);
+            Visibility pointsVisibility = ((Polyline)graphData.canvasData.canvas.Children[graphData.canvasElementNames[graphData.GetFormattedString(GraphData.GraphElementTypes.Graph, 0)]]).Visibility;
+
+            // The y-axis is in the top left of the canvas, so closer to the "normal" x-axis actually means a bigger y-value
+            Assert.AreEqual(Visibility.Hidden, pointsVisibility);
+        }
     }
 }
