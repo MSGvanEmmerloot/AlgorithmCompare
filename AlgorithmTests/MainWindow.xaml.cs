@@ -29,6 +29,8 @@ namespace AlgorithmTests
         public List<CheckBox> algorithmSelectCheckBoxes = new List<CheckBox>();
         public List<string> arrayNames = new List<string>();
 
+        private int selectedArray = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -53,7 +55,8 @@ namespace AlgorithmTests
             AddAlgorithmCheckBoxesToList();
 
             graphData = new GraphData(canGraph);
-            graphData.DrawCustomGraph();
+            //graphData.InitArrayDatasets(selectedArray+1);
+            //graphData.DrawCustomGraph(selectedArray);
         }
 
         private void AddAlgorithmCheckBoxesToList()
@@ -81,12 +84,12 @@ namespace AlgorithmTests
                 newComboBox.Selected += ComboBoxArraySelectItem_Selected;
                 comboBoxArraySelect.Items.Add(newComboBox);
             }
-            comboBoxArraySelect.SelectedIndex = 0;
+            comboBoxArraySelect.SelectedIndex = selectedArray;
         }
 
         public void AddAlgorithmsDataToGraph()
         {
-            List<double[]> algorithmPerformanceList = new List<double[]>();
+            //List<double[]> algorithmPerformanceList = new List<double[]>();
 
             if (ArrayCompare.algorithmPerformances.Count < 1) { return; }
             if (ArrayCompare.algorithmPerformances[0].Count < 1) { return; }
@@ -99,10 +102,52 @@ namespace AlgorithmTests
                 algorithmSelectCheckBoxes[c].Visibility = Visibility.Hidden;
             }
 
-            // Get data of every algorithm for a single array
-            for(int i=0; i< ArrayCompare.algorithmNames.Count; i++)
+            graphData.InitArrayDatasets(len);
+            RefreshArraySelectionList(len);
+
+            //for (int a=0; a<len; a++)
+            //{
+            //    AddSingleArrayDataToGraph(a);
+            //    //algorithmPerformanceList.Clear();
+
+            //    //// Get data of every algorithm for a single array
+            //    //for (int i=0; i< ArrayCompare.algorithmNames.Count; i++)
+            //    //{
+            //    //    algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, a));
+            //    //    //algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
+
+            //    //    if (algorithmSelectCheckBoxes.Count > i)
+            //    //    {
+            //    //        algorithmSelectCheckBoxes[i].Content = ArrayCompare.algorithmNames[i];
+            //    //        if (graphData.canvasData.brushes.Length > i)
+            //    //        {
+            //    //            algorithmSelectCheckBoxes[i].Background = graphData.canvasData.brushes[i];
+            //    //        }
+            //    //        algorithmSelectCheckBoxes[i].Visibility = Visibility.Visible;
+            //    //    }
+            //    //}
+
+            //    //graphData.AddAlgorithmsDataToGraph(a, algorithmPerformanceList);
+            //}
+
+            for (int a = 0; a < len; a++)
             {
-                algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
+                if (a == selectedArray) { continue; }
+                AddSingleArrayDataToGraph(a);
+            }
+            AddSingleArrayDataToGraph(selectedArray);
+        }
+
+        public void AddSingleArrayDataToGraph(int arrayIndex)
+        {
+            Console.WriteLine("Array " + arrayIndex + " will be calculated");
+            List<double[]> algorithmPerformanceList = new List<double[]>();
+
+            // Get data of every algorithm for a single array
+            for (int i = 0; i < ArrayCompare.algorithmNames.Count; i++)
+            {
+                algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, arrayIndex));
+                //algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
 
                 if (algorithmSelectCheckBoxes.Count > i)
                 {
@@ -115,19 +160,17 @@ namespace AlgorithmTests
                 }
             }
 
-            RefreshArraySelectionList(len);
-
-
-            graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
+            graphData.AddAlgorithmsDataToGraph(arrayIndex, algorithmPerformanceList);
         }
-        
+
+
         private void CheckBoxAlgorithmSelect_Click(object sender, RoutedEventArgs e)
         {
             int index = algorithmSelectCheckBoxes.FindIndex(x => x.Equals(sender));
 
             if(index == -1) { return; }
             
-            graphData.ToggleVisible(index, ((CheckBox)sender).IsChecked == true);
+            graphData.ToggleVisible(selectedArray, index, ((CheckBox)sender).IsChecked == true);
         }
 
         //private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
@@ -137,12 +180,12 @@ namespace AlgorithmTests
 
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {
-            graphData.ToggleAutoResize((checkBoxAutoResize.IsChecked == true));
+            graphData.ToggleAutoResize(selectedArray, (checkBoxAutoResize.IsChecked == true));
         }
 
         private void CheckBoxPlotPolyline_Click(object sender, RoutedEventArgs e)
         {
-            graphData.PlotPolyline((checkBoxPolyLine.IsChecked == true));
+            graphData.PlotPolyline(selectedArray, (checkBoxPolyLine.IsChecked == true));
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -166,7 +209,8 @@ namespace AlgorithmTests
             if (arrayNames.Contains(content))
             {
                 //Console.WriteLine(arrayNames.IndexOf(content));
-                graphData.DisplayArrayData(arrayNames.IndexOf(content));
+                selectedArray = arrayNames.IndexOf(content);
+                graphData.DisplayArrayData(selectedArray);
             }            
         }
     }    

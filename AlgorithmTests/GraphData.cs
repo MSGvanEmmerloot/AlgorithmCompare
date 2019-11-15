@@ -20,14 +20,21 @@ namespace AlgorithmTests
 
         public bool autoResize = true;
         public bool plotPolyline = true;
-        public List<bool> dataSetVisible { get; private set; } = new List<bool>();
+        public List<bool> datasetVisible { get; private set; } = new List<bool>();
+
+        public class DatasetContainer
+        {
+            public List<double[]> dataSets = new List<double[]>();
+            public double maxValueY = 10.0;
+            public double yScale  = 0.0;
+        }
 
         public class CanvasData{
 
             public Canvas canvas { get; private set; }
 
             public int maxValueX { get; private set; } = 5;
-            public double maxValueY { get; private set; } = 10.0;
+            //public double maxValueY { get; private set; } = 10.0;
 
             public double graphWidth { get; private set; } = 0.0;
             public double graphHeight { get; private set; } = 0.0;
@@ -40,9 +47,11 @@ namespace AlgorithmTests
 
             public double xStep { get; private set; } = 0.0;
             public double yStep { get; private set; } = 0.0;
-            public double yScale { get; private set; } = 0.0;
+            //public double yScale { get; private set; } = 0.0;
 
-            public List<double[]> dataSets { get; private set; } = new List<double[]>();
+            public List<DatasetContainer> arrayDatasets = new List<DatasetContainer>();
+            public int selectedArray = 0;
+            //public List<double[]> dataSets { get; private set; } = new List<double[]>();
 
             public Brush[] brushes { get; private set; } = 
                 { Brushes.Red, Brushes.Green, Brushes.Indigo, Brushes.Orange, Brushes.Blue, Brushes.Violet, Brushes.Yellow };
@@ -56,14 +65,16 @@ namespace AlgorithmTests
                 graphHeight = canvas.Height;
             }
 
-            public void Recalculate()
+            public void Recalculate(int array)
             {
-                if (dataSets.Count < 1)
+                if (arrayDatasets.Count < array) { Console.WriteLine("Array not found"); return; }
+
+                if (arrayDatasets[array].dataSets.Count < 1)
                 {
                     Console.WriteLine("No datasets added!");
                     maxValueX = 5;
                 }
-                else maxValueX = dataSets[0].Length;
+                else maxValueX = arrayDatasets[array].dataSets[0].Length;
 
                 xmax = graphWidth - margin;
                 ymax = graphHeight - margin;
@@ -73,7 +84,7 @@ namespace AlgorithmTests
 
                 xStep = xmax / (maxValueX - 1);
                 yStep = ymax / 5;
-                yScale = ymax / maxValueY;
+                arrayDatasets[array].yScale = ymax / arrayDatasets[array].maxValueY;
             }
 
             public void SetMargin(double _margin)
@@ -86,28 +97,31 @@ namespace AlgorithmTests
                 maxValueX = _x;
             }
 
-            public void SetMaxY(double _y)
+            public void SetMaxY(int array, double _y)
             {
-                maxValueY = _y;
+                arrayDatasets[array].maxValueY = _y;
             }
 
-            public void AddDataset(double[] set)
+            public void AddDataset(int array, double[] set)
             {
-                dataSets.Add(set);
-            }
-
-            public void ResetDatasets()
-            {
-                dataSets.Clear();
-            }
-
-            public void PrintDatasetValues()
-            {
-                for (int d = 0; d < dataSets.Count; d++)
+                if(array< arrayDatasets.Count)
                 {
-                    for (int i = 0; i < dataSets[d].Length; i++)
+                    arrayDatasets[array].dataSets.Add(set);
+                }                
+            }
+
+            public void ResetDatasets(int array)
+            {
+                arrayDatasets[array].dataSets.Clear();
+            }
+
+            public void PrintDatasetValues(int array)
+            {
+                for (int d = 0; d < arrayDatasets[array].dataSets.Count; d++)
+                {
+                    for (int i = 0; i < arrayDatasets[array].dataSets[d].Length; i++)
                     {
-                        Console.WriteLine("dataSets[" + d + "][" + i + "] = " + dataSets[d][i]);
+                        Console.WriteLine("dataSets[" + d + "][" + i + "] = " + arrayDatasets[array].dataSets[d][i]);
                     }
                 }
             }
@@ -136,9 +150,9 @@ namespace AlgorithmTests
             return null;
         }
         
-        public void DrawCustomGraph()
+        public void DrawCustomGraph(int array)
         {
-            canvasData.Recalculate();
+            canvasData.Recalculate(array);
 
             RedrawAxes();
         }        
@@ -224,7 +238,7 @@ namespace AlgorithmTests
             RedrawAxisY();
         }
 
-        public void CreateDatasets()
+        public void CreateDatasets(int array)
         {
             canvasElementList.Clear();
             canvasElementNames.Clear();
@@ -233,7 +247,7 @@ namespace AlgorithmTests
             RedrawAxes();
 
             // Create dataset
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
 
@@ -241,7 +255,7 @@ namespace AlgorithmTests
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
-                    double yCoord = canvasData.ymax - (canvasData.dataSets[d][i] * canvasData.yScale);
+                    double yCoord = canvasData.ymax - (canvasData.arrayDatasets[array].dataSets[d][i] * canvasData.arrayDatasets[array].yScale);
 
                     points.Add(new Point(xCoord, yCoord));
                 }
@@ -250,9 +264,9 @@ namespace AlgorithmTests
                 polyline.StrokeThickness = 1;
                 polyline.Stroke = canvasData.brushes[d];
                 polyline.Points = points;
-                if (dataSetVisible.Count > d)
+                if (datasetVisible.Count > d)
                 {
-                    if (dataSetVisible[d] == false || !plotPolyline)
+                    if (datasetVisible[d] == false || !plotPolyline)
                     {
                         polyline.Visibility = Visibility.Hidden;
                     }
@@ -270,7 +284,7 @@ namespace AlgorithmTests
             }
             
             // Calculate averages
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
                 if (d >= canvasData.brushesAverage.Length) { break; }
 
@@ -278,23 +292,23 @@ namespace AlgorithmTests
                 double sumValue = 0;
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
-                    sumValue += canvasData.dataSets[d][i];
+                    sumValue += canvasData.arrayDatasets[array].dataSets[d][i];
                 }
 
                 double averageValue = sumValue / canvasData.maxValueX;
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
-                    pointsAverage.Add(new Point(xCoord, canvasData.ymax - (averageValue * canvasData.yScale)));
+                    pointsAverage.Add(new Point(xCoord, canvasData.ymax - (averageValue * canvasData.arrayDatasets[array].yScale)));
                 }
 
                 Polyline polylineAverage = new Polyline();
                 polylineAverage.StrokeThickness = 2;
                 polylineAverage.Stroke = canvasData.brushesAverage[d];
                 polylineAverage.Points = pointsAverage;
-                if (dataSetVisible.Count > d)
+                if (datasetVisible.Count > d)
                 {
-                    if (dataSetVisible[d] == false)
+                    if (datasetVisible[d] == false)
                     {
                         polylineAverage.Visibility = Visibility.Hidden;
                     }
@@ -324,9 +338,9 @@ namespace AlgorithmTests
             for(int p=0; p<points.Count; p++)
             {
                 Ellipse ellipse = CreateEllipse(datasetIndex, points[p].X, points[p].Y);
-                if (dataSetVisible.Count > datasetIndex)
+                if (datasetVisible.Count > datasetIndex)
                 {
-                    if (dataSetVisible[datasetIndex] == false)
+                    if (datasetVisible[datasetIndex] == false)
                     {
                         ellipse.Visibility = Visibility.Hidden;
                     }
@@ -359,28 +373,38 @@ namespace AlgorithmTests
             return ellipse;
         }
 
-        public void AddAlgorithmsDataToGraph(List<double[]> algorithmPerformances)
+        public void InitArrayDatasets(int arrayAmount)
+        {
+            canvasData.arrayDatasets.Clear();
+            for (int a=0; a< arrayAmount; a++)
+            {
+                canvasData.arrayDatasets.Add(new DatasetContainer());
+            }
+            Console.WriteLine("Initialized " + arrayAmount + " arrays");
+        }
+
+        public void AddAlgorithmsDataToGraph(int array, List<double[]> algorithmPerformances)
         {
             int algorithmCount = algorithmPerformances.Count;
 
-            canvasData.ResetDatasets();
-            dataSetVisible.Clear();
+            canvasData.ResetDatasets(array);
+            datasetVisible.Clear();
 
             for (int i = 0; i < algorithmCount; i++)
             {
                 //if (i > 2) { break; }
-                canvasData.AddDataset(algorithmPerformances[i]);
-                dataSetVisible.Add(true);
+                canvasData.AddDataset(array, algorithmPerformances[i]);
+                datasetVisible.Add(true);
             }
 
             double maxY = 0.0;
-            for (int i = 0; i < canvasData.dataSets.Count; i++)
+            for (int i = 0; i < canvasData.arrayDatasets[array].dataSets.Count; i++)
             {
-                if (dataSetVisible[i] == true)
+                if (datasetVisible[i] == true)
                 {
-                    for (int j = 0; j < canvasData.dataSets[i].Length; j++)
+                    for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
                     {
-                        double curY = canvasData.dataSets[i][j];
+                        double curY = canvasData.arrayDatasets[array].dataSets[i][j];
 
                         if (curY > maxY) { maxY = curY; }
                     }
@@ -389,24 +413,26 @@ namespace AlgorithmTests
 
             canvasData.canvas.Children.Clear();
 
-            canvasData.SetMaxY(maxY);
-            canvasData.Recalculate();
+            canvasData.SetMaxY(array, maxY);
+            canvasData.Recalculate(array);
 
             RedrawAxes();
-            CreateDatasets();
+            CreateDatasets(array);
 
-            canvasData.PrintDatasetValues();
+            //canvasData.PrintDatasetValues(array);
         }
 
         public void DisplayArrayData(int arrayIndex)
         {
             Console.WriteLine("Displaying data of array " + arrayIndex);
+            canvasData.selectedArray = arrayIndex;
+            RecalculateDataplot(arrayIndex);
         }
 
         // Recalculates the dataplot, note this function should not be used after modifying the dataset, but only when scaling the graph
-        public void RecalculateDataplot()
+        public void RecalculateDataplot(int array)
         {
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
 
@@ -418,7 +444,7 @@ namespace AlgorithmTests
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
-                    double yCoord = canvasData.ymax - (canvasData.dataSets[d][i] * canvasData.yScale);
+                    double yCoord = canvasData.ymax - (canvasData.arrayDatasets[array].dataSets[d][i] * canvasData.arrayDatasets[array].yScale);
 
                     Point newPoint = new Point(xCoord, yCoord);
                     
@@ -429,7 +455,7 @@ namespace AlgorithmTests
                 }
             }
 
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
                 if (d >= canvasData.brushes.Length) { break; }
 
@@ -439,7 +465,7 @@ namespace AlgorithmTests
                     if (!canvasElementNames.ContainsKey(name)) { break; }
                     
                     double xCoord = canvasData.xmin + (p * canvasData.xStep);
-                    double yCoord = canvasData.ymax - (canvasData.dataSets[d][p] * canvasData.yScale);
+                    double yCoord = canvasData.ymax - (canvasData.arrayDatasets[array].dataSets[d][p] * canvasData.arrayDatasets[array].yScale);
 
                     Ellipse pointEllipse = CreateEllipse(d, xCoord, yCoord);
 
@@ -450,7 +476,7 @@ namespace AlgorithmTests
                 }
             }
 
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
                 if (d >= canvasData.brushesAverage.Length) { break; }
 
@@ -462,14 +488,14 @@ namespace AlgorithmTests
                 double sumValue = 0;
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
-                    sumValue += canvasData.dataSets[d][i];
+                    sumValue += canvasData.arrayDatasets[array].dataSets[d][i];
                 }
 
                 double averageValue = sumValue / canvasData.maxValueX;
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
-                    double yCoord = canvasData.ymax - (averageValue * canvasData.yScale);
+                    double yCoord = canvasData.ymax - (averageValue * canvasData.arrayDatasets[array].yScale);
 
                     Point newPoint = new Point(xCoord, yCoord);
 
@@ -481,14 +507,14 @@ namespace AlgorithmTests
             }
         }
 
-        public void ToggleVisible(int dataSetIndex, bool visible)
+        public void ToggleVisible(int array, int dataSetIndex, bool visible)
         {
             string graphName = GetFormattedString(GraphElementTypes.Graph, dataSetIndex);
             string averageName = GetFormattedString(GraphElementTypes.Average, dataSetIndex);
             Visibility visibility = Visibility.Visible;
 
-            if (dataSetIndex >= dataSetVisible.Count) { return; }
-            dataSetVisible[dataSetIndex] = visible;
+            if (dataSetIndex >= datasetVisible.Count) { return; }
+            datasetVisible[dataSetIndex] = visible;
 
             if (!visible) { visibility = Visibility.Hidden; }
 
@@ -505,7 +531,7 @@ namespace AlgorithmTests
             }
 
             // Points            
-            for (int p = 0; p < canvasData.dataSets[dataSetIndex].Length; p++)
+            for (int p = 0; p < canvasData.arrayDatasets[array].dataSets[dataSetIndex].Length; p++)
             {
                 string ellipseName = GetFormattedString(GraphElementTypes.Point, dataSetIndex, p);
 
@@ -515,16 +541,16 @@ namespace AlgorithmTests
                 }
             }
 
-            if (autoResize) { RescaleCanvas(); }
+            if (autoResize) { RescaleCanvas(array); }
         }
 
-        public void ToggleAutoResize(bool resize)
+        public void ToggleAutoResize(int array, bool resize)
         {
             autoResize = resize;
-            if (autoResize) { RescaleCanvas(); }
+            if (autoResize) { RescaleCanvas(array); }
         }
 
-        public void PlotPolyline(bool plot)
+        public void PlotPolyline(int array, bool plot)
         {
             plotPolyline = plot;
             Visibility visibility = Visibility.Visible;
@@ -534,9 +560,9 @@ namespace AlgorithmTests
                 visibility = Visibility.Hidden;
             }
 
-            for (int d = 0; d < canvasData.dataSets.Count; d++)
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
             {
-                if (dataSetVisible[d])
+                if (datasetVisible[d])
                 {
                     string graphName = GetFormattedString(GraphElementTypes.Graph, d);
 
@@ -548,19 +574,19 @@ namespace AlgorithmTests
             }
         }
 
-        public void RescaleCanvas()
+        public void RescaleCanvas(int array)
         {
             double maxY = 0.0;
 
-            if(canvasData.dataSets.Count < 1) { return; }
+            if(canvasData.arrayDatasets[array].dataSets.Count < 1) { return; }
 
-            for (int i = 0; i < canvasData.dataSets.Count; i++)
+            for (int i = 0; i < canvasData.arrayDatasets[array].dataSets.Count; i++)
             {
-                if (dataSetVisible[i])
+                if (datasetVisible[i])
                 {
-                    for (int j = 0; j < canvasData.dataSets[i].Length; j++)
+                    for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
                     {
-                        double curY = canvasData.dataSets[i][j];
+                        double curY = canvasData.arrayDatasets[array].dataSets[i][j];
 
                         if (curY > maxY)
                         {
@@ -573,8 +599,8 @@ namespace AlgorithmTests
             if (maxY != 0)
             {
                 // Set max Y value
-                canvasData.SetMaxY(maxY);
-                canvasData.Recalculate();
+                canvasData.SetMaxY(array, maxY);
+                canvasData.Recalculate(array);
                 RedrawAxisY();
 
                 //Print everything to check if they are in sync
@@ -596,7 +622,7 @@ namespace AlgorithmTests
                 //}
 
                 // Recalculate plot values
-                RecalculateDataplot();
+                RecalculateDataplot(array);
             }
         }
 
