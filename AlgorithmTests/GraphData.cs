@@ -364,6 +364,7 @@ namespace AlgorithmTests
             int algorithmCount = algorithmPerformances.Count;
 
             canvasData.ResetDatasets();
+            dataSetVisible.Clear();
 
             for (int i = 0; i < algorithmCount; i++)
             {
@@ -395,6 +396,11 @@ namespace AlgorithmTests
             CreateDatasets();
 
             canvasData.PrintDatasetValues();
+        }
+
+        public void DisplayArrayData(int arrayIndex)
+        {
+            Console.WriteLine("Displaying data of array " + arrayIndex);
         }
 
         // Recalculates the dataplot, note this function should not be used after modifying the dataset, but only when scaling the graph

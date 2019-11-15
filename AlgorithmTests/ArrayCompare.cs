@@ -23,20 +23,14 @@ namespace AlgorithmTests
 
             public void AddResult(int index, long ticks)
             {
-                if (index < ticksElapsed.Length)
-                {
-                    ticksElapsed[index] = ticks;
-                }
+                if (index < ticksElapsed.Length) { ticksElapsed[index] = ticks; }
             }
 
             public void SetResults(long[] results)
             {
                 for (int i = 0; i < results.Length; i++)
                 {
-                    if (ticksElapsed.Length > i)
-                    {
-                        ticksElapsed[i] = results[i];
-                    }
+                    if (ticksElapsed.Length > i) { ticksElapsed[i] = results[i]; }
                 }
             }
         }
@@ -50,6 +44,7 @@ namespace AlgorithmTests
         //For debugging
         //public static string runCode = "";
         //public static bool doneCalculating = false;
+        private static bool log = false;
 
         private static bool initialized = false;
         private static Stopwatch stopWatch = new Stopwatch();
@@ -119,10 +114,10 @@ namespace AlgorithmTests
             }
 
             Console.WriteLine("Calculated the averages for " + numberOfAlgorithms + " algorithms with " + numberOfArrays + " arrays each, based on " + measurements + " measurements");
-            printAlgorithmResults();
+            PrintAlgorithmResults();
         }
 
-        private static void printAlgorithmResults()
+        private static void PrintAlgorithmResults()
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < algorithmPerformancesAverage.Count; i++)
@@ -140,9 +135,7 @@ namespace AlgorithmTests
 
         public static void AddAlgorithmToQueue(string name, Action<int[]> algorithm)
         {
-            if (algorithmNames.Contains(name)){
-                return;
-            }
+            if (algorithmNames.Contains(name)){ return; }
 
             algorithmNames.Add(name);
             algorithms.Add(algorithm);
@@ -190,9 +183,7 @@ namespace AlgorithmTests
 
         public static void AddToBaseArrays(int[] newArray)
         {
-            if(newArray.Length != arraySize){
-                return;
-            }
+            if(newArray.Length != arraySize){ return; }
 
             baseArrays.Add(newArray);
 
@@ -210,10 +201,7 @@ namespace AlgorithmTests
         {
             int[] tempArray = new int[arraySize];
 
-            for(int i=0; i<arraySize; i++)
-            {
-                tempArray[i] = i;
-            }
+            for(int i=0; i<arraySize; i++) { tempArray[i] = i; }
 
             return tempArray;
         }
@@ -226,10 +214,7 @@ namespace AlgorithmTests
 
             for (int i = 0; i < arraySize; i++)
             {
-                if(curVal == numberOfValues)
-                {
-                    curVal = 0;
-                }
+                if(curVal == numberOfValues) { curVal = 0; }
                 tempArray[i] = curVal;
                 curVal++;
             }
@@ -255,10 +240,7 @@ namespace AlgorithmTests
         // Reset one element of sortedArray
         private static void ResetSortedArray(int index)
         {
-            if(baseArrays.Count < index)
-            {
-                return;
-            }
+            if(baseArrays.Count < index) { return; }
 
             if (sortedArrays.Count<index || index == 0)            
             {
@@ -288,10 +270,7 @@ namespace AlgorithmTests
         // Run all sorting algorithms
         public static void RunTestbench(int runAmount = 1)
         {
-            if (algorithms.Count <= 0)
-            {
-                return;
-            }
+            if (algorithms.Count <= 0) { return; }
 
             // Dummy measurement to reduce overhead with the "real" measurements
             ResetStopWatch();
@@ -313,19 +292,19 @@ namespace AlgorithmTests
             stopWatch.Stop();
         }
 
-        public static List<AlgorithmPerformance> RunAllAlgorithms(bool log = false)
+        public static List<AlgorithmPerformance> RunAllAlgorithms()
         {
             List<AlgorithmPerformance> currentTestRun = new List<AlgorithmPerformance>();
 
             for (int j = 0; j < algorithms.Count; j++)
             {
-                currentTestRun.Add(RunAlgorithm(j, log));
+                currentTestRun.Add(RunAlgorithm(j));
             }
 
             return currentTestRun;
         }
 
-        public static AlgorithmPerformance RunAlgorithm(int algorithmIndex, bool log = false)
+        public static AlgorithmPerformance RunAlgorithm(int algorithmIndex)
         {
             if (log)
             {            
@@ -349,7 +328,7 @@ namespace AlgorithmTests
             return currentPerformance;
         }
 
-        public static AlgorithmPerformance RunAlgorithmForAllArrays(int algorithmIndex, bool log = false)
+        public static AlgorithmPerformance RunAlgorithmForAllArrays(int algorithmIndex)
         {
             AlgorithmPerformance currentPerformance = new AlgorithmPerformance(algorithmNames[algorithmIndex]);
 
@@ -402,28 +381,25 @@ namespace AlgorithmTests
         }        
 
         //========== Print functions ==========//
-        public static void PrintStopWatchVals()
-        {
-            long freq = Stopwatch.Frequency;
-            Console.WriteLine("Stopwatch frequency: " + freq);
-            long ns = (1000 * 1000 * 1000) / freq;
-            Console.WriteLine("nanoseconds per tick: " + ns);
-        }
+        //public static void PrintStopWatchVals()
+        //{
+        //    long freq = Stopwatch.Frequency;
+        //    Console.WriteLine("Stopwatch frequency: " + freq);
+        //    long ns = (1000 * 1000 * 1000) / freq;
+        //    Console.WriteLine("nanoseconds per tick: " + ns);
+        //}
 
-        public static void PrintAllArrays()
-        {
-            Console.WriteLine("Base Arrays:");
-            PrintArrays(baseArrays);
-            Console.WriteLine("Sorted Arrays:");
-            PrintArrays(sortedArrays);
-        }
+        //public static void PrintAllArrays()
+        //{
+        //    Console.WriteLine("Base Arrays:");
+        //    PrintArrays(baseArrays);
+        //    Console.WriteLine("Sorted Arrays:");
+        //    PrintArrays(sortedArrays);
+        //}
 
         public static void PrintArrays(List<int[]> array)
         {
-            if (array == null)
-            {
-                array = baseArrays;
-            }
+            if (array == null) { array = baseArrays; }
 
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < array.Count; i++)

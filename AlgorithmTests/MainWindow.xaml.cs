@@ -27,6 +27,7 @@ namespace AlgorithmTests
         
         public GraphData graphData;
         public List<CheckBox> algorithmSelectCheckBoxes = new List<CheckBox>();
+        public List<string> arrayNames = new List<string>();
 
         public MainWindow()
         {
@@ -49,13 +50,13 @@ namespace AlgorithmTests
                 cvAlgorithmPerformances.GroupDescriptions.Add(new PropertyGroupDescription("algorithmName"));
             }
 
-            AddCheckBoxesToList();
+            AddAlgorithmCheckBoxesToList();
 
             graphData = new GraphData(canGraph);
             graphData.DrawCustomGraph();
         }
 
-        private void AddCheckBoxesToList()
+        private void AddAlgorithmCheckBoxesToList()
         {
             algorithmSelectCheckBoxes.Add(checkBoxOne);
             algorithmSelectCheckBoxes.Add(checkBoxTwo);
@@ -68,25 +69,32 @@ namespace AlgorithmTests
             algorithmSelectCheckBoxes.Add(checkBoxNine);
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void RefreshArraySelectionList(int arrayAmount)
         {
-            AddAlgorithmsDataToGraph();
-        }
-
-        private void PrintButton_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Running testbench forwards");
-            ArrayCompare.RunTestbench(5);
-            toUpdate = true;
-
-            arrayData.Items.Refresh();
+            comboBoxArraySelect.Items.Clear();
+            arrayNames.Clear();
+            for (int i=0; i< arrayAmount; i++)
+            {
+                string arrayName = "Array " + i;
+                arrayNames.Add(arrayName);
+                ComboBoxItem newComboBox = new ComboBoxItem { Content = arrayName };
+                newComboBox.Selected += ComboBoxArraySelectItem_Selected;
+                comboBoxArraySelect.Items.Add(newComboBox);
+            }
+            comboBoxArraySelect.SelectedIndex = 0;
         }
 
         public void AddAlgorithmsDataToGraph()
         {
             List<double[]> algorithmPerformanceList = new List<double[]>();
 
-            for(int c = 0; c< algorithmSelectCheckBoxes.Count; c++)
+            if (ArrayCompare.algorithmPerformances.Count < 1) { return; }
+            if (ArrayCompare.algorithmPerformances[0].Count < 1) { return; }
+            if (ArrayCompare.algorithmPerformances[0][0].ticksElapsed.Length < 1) { return; }
+
+            int len = ArrayCompare.algorithmPerformances[0][0].ticksElapsed.Length;
+
+            for (int c = 0; c< algorithmSelectCheckBoxes.Count; c++)
             {
                 algorithmSelectCheckBoxes[c].Visibility = Visibility.Hidden;
             }
@@ -106,41 +114,13 @@ namespace AlgorithmTests
                     algorithmSelectCheckBoxes[i].Visibility = Visibility.Visible;
                 }
             }
-            
+
+            RefreshArraySelectionList(len);
+
+
             graphData.AddAlgorithmsDataToGraph(algorithmPerformanceList);
         }
-
-        //private void UpdateDataGridBackgroundColor(object sender, EventArgs e)
-        //{
-        //    if (toUpdate)
-        //    {
-        //        toUpdate = false;
-        //        foreach (ArrayCompare.AlgorithmPerformance perf in arrayData.ItemsSource)
-        //        {
-        //            var row = arrayData.ItemContainerGenerator.ContainerFromItem(perf) as DataGridRow;
-
-        //            if (row == null)
-        //            {
-        //                return;
-        //            }
-        //            if (ArrayCompare.GetAlgorithmIndex(perf.algorithmName) % 2 == 0)
-        //            {
-        //                row.Background = Brushes.Aqua;
-        //            }
-        //            else row.Background = Brushes.Lime;
-        //        }
-
-        //        checkBoxOne.Content = ArrayCompare.algorithmNames[0];
-        //        checkBoxOne.Background = graphData.canvasData.brushes[0];
-
-        //        checkBoxTwo.Content = ArrayCompare.algorithmNames[1];
-        //        checkBoxTwo.Background = graphData.canvasData.brushes[1];
-
-        //        checkBoxThree.Content = ArrayCompare.algorithmNames[2];
-        //        checkBoxThree.Background = graphData.canvasData.brushes[2];
-        //    }
-        //}
-
+        
         private void CheckBoxAlgorithmSelect_Click(object sender, RoutedEventArgs e)
         {
             int index = algorithmSelectCheckBoxes.FindIndex(x => x.Equals(sender));
@@ -163,6 +143,31 @@ namespace AlgorithmTests
         private void CheckBoxPlotPolyline_Click(object sender, RoutedEventArgs e)
         {
             graphData.PlotPolyline((checkBoxPolyLine.IsChecked == true));
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddAlgorithmsDataToGraph();
+        }
+
+        private void PrintButton_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Running testbench forwards");
+            ArrayCompare.RunTestbench(5);
+            toUpdate = true;
+
+            arrayData.Items.Refresh();            
+        }
+
+        private void ComboBoxArraySelectItem_Selected(object sender, RoutedEventArgs e)
+        {
+            string content = ((ComboBoxItem)sender).Content.ToString();
+            //Console.WriteLine(content);
+            if (arrayNames.Contains(content))
+            {
+                //Console.WriteLine(arrayNames.IndexOf(content));
+                graphData.DisplayArrayData(arrayNames.IndexOf(content));
+            }            
         }
     }    
 }

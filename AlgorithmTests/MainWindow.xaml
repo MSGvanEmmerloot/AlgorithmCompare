@@ -31,10 +31,14 @@
         <CheckBox x:Name="checkBoxSeven" Content="7" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
         <CheckBox x:Name="checkBoxEight" Content="8" HorizontalAlignment="Left" Margin="10,242,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
         <CheckBox x:Name="checkBoxNine" Content="9" HorizontalAlignment="Left" Margin="10,257,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        
+
         <Button x:Name="testButton" Content="Test" HorizontalAlignment="Left" Margin="105,342,0,0" VerticalAlignment="Top" Width="89" Click="TestButton_Click" Height="46"/>
         <CheckBox x:Name="checkBoxAutoResize" Content="auto resize" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAutoResize_Click" IsChecked="True"/>
         <CheckBox x:Name="checkBoxPolyLine" Content="plot polyline" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxPlotPolyline_Click" IsChecked="True"/>
-        
+        <ComboBox x:Name="comboBoxArraySelect" HorizontalAlignment="Left" Margin="105,49,0,0" VerticalAlignment="Top" Width="349" SelectedIndex="0">
+            <ComboBoxItem Content="Array 0" Selected="ComboBoxArraySelectItem_Selected"/>
+            <ComboBoxItem Content="Array 1" Selected="ComboBoxArraySelectItem_Selected"/>
+        </ComboBox>
+
     </Grid>
 </Window>
