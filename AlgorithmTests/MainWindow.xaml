@@ -9,7 +9,7 @@
 
     <Grid Height="420" Margin="0,0,-0.4,0" VerticalAlignment="Bottom">
         <Label x:Name="msgLabel" Content="" HorizontalAlignment="Left" Margin="76,214,0,0" VerticalAlignment="Top" Width="333"/>
-        <Button x:Name="printButton" Content="Measure algorithm performance" HorizontalAlignment="Left" Margin="232,302,0,0" VerticalAlignment="Top" Width="222" Click="PrintButton_Click" Height="86"/>
+        <Button x:Name="runButton" Content="Measure algorithm performance" HorizontalAlignment="Left" Margin="232,302,0,0" VerticalAlignment="Top" Width="222" Click="RunButton_Click" Height="86"/>
 
         <Canvas  Name="canGraph" Background="White"
             Width="349" Height="198" Margin="105,86,0,0"
@@ -32,13 +32,14 @@
         <CheckBox x:Name="checkBoxEight" Content="8" HorizontalAlignment="Left" Margin="10,242,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
         <CheckBox x:Name="checkBoxNine" Content="9" HorizontalAlignment="Left" Margin="10,257,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
 
-        <Button x:Name="testButton" Content="Test" HorizontalAlignment="Left" Margin="105,342,0,0" VerticalAlignment="Top" Width="89" Click="TestButton_Click" Height="46"/>
+        <Button x:Name="updateButton" Content="Update" HorizontalAlignment="Left" Margin="105,302,0,0" VerticalAlignment="Top" Width="89" Click="UpdateButton_Click" Height="46"/>
         <CheckBox x:Name="checkBoxAutoResize" Content="auto resize" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAutoResize_Click" IsChecked="True"/>
         <CheckBox x:Name="checkBoxPolyLine" Content="plot polyline" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxPlotPolyline_Click" IsChecked="True"/>
         <ComboBox x:Name="comboBoxArraySelect" HorizontalAlignment="Left" Margin="105,49,0,0" VerticalAlignment="Top" Width="349" SelectedIndex="0">
             <ComboBoxItem Content="Array 0" Selected="ComboBoxArraySelectItem_Selected"/>
             <ComboBoxItem Content="Array 1" Selected="ComboBoxArraySelectItem_Selected"/>
         </ComboBox>
+        <Button x:Name="restartButton" Content="Restart" HorizontalAlignment="Left" Margin="105,353,0,0" VerticalAlignment="Top" Width="89" Click="RestartButton_Click" Height="35"/>
 
     </Grid>
 </Window>

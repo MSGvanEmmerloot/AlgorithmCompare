@@ -57,6 +57,8 @@ namespace AlgorithmTests
             graphData = new GraphData(canGraph);
             //graphData.InitArrayDatasets(selectedArray+1);
             //graphData.DrawCustomGraph(selectedArray);
+            RunTests();
+            AddAlgorithmsDataToGraph();
         }
 
         private void AddAlgorithmCheckBoxesToList()
@@ -87,10 +89,17 @@ namespace AlgorithmTests
             comboBoxArraySelect.SelectedIndex = selectedArray;
         }
 
+        public void RunTests()
+        {
+            //Console.WriteLine("Running testbench forwards");
+            ArrayCompare.RunTestbench(10);
+            toUpdate = true;
+
+            arrayData.Items.Refresh();
+        }
+
         public void AddAlgorithmsDataToGraph()
         {
-            //List<double[]> algorithmPerformanceList = new List<double[]>();
-
             if (ArrayCompare.algorithmPerformances.Count < 1) { return; }
             if (ArrayCompare.algorithmPerformances[0].Count < 1) { return; }
             if (ArrayCompare.algorithmPerformances[0][0].ticksElapsed.Length < 1) { return; }
@@ -104,31 +113,6 @@ namespace AlgorithmTests
 
             graphData.InitArrayDatasets(len);
             RefreshArraySelectionList(len);
-
-            //for (int a=0; a<len; a++)
-            //{
-            //    AddSingleArrayDataToGraph(a);
-            //    //algorithmPerformanceList.Clear();
-
-            //    //// Get data of every algorithm for a single array
-            //    //for (int i=0; i< ArrayCompare.algorithmNames.Count; i++)
-            //    //{
-            //    //    algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, a));
-            //    //    //algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
-
-            //    //    if (algorithmSelectCheckBoxes.Count > i)
-            //    //    {
-            //    //        algorithmSelectCheckBoxes[i].Content = ArrayCompare.algorithmNames[i];
-            //    //        if (graphData.canvasData.brushes.Length > i)
-            //    //        {
-            //    //            algorithmSelectCheckBoxes[i].Background = graphData.canvasData.brushes[i];
-            //    //        }
-            //    //        algorithmSelectCheckBoxes[i].Visibility = Visibility.Visible;
-            //    //    }
-            //    //}
-
-            //    //graphData.AddAlgorithmsDataToGraph(a, algorithmPerformanceList);
-            //}
 
             for (int a = 0; a < len; a++)
             {
@@ -147,7 +131,6 @@ namespace AlgorithmTests
             for (int i = 0; i < ArrayCompare.algorithmNames.Count; i++)
             {
                 algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, arrayIndex));
-                //algorithmPerformanceList.Add(ArrayCompare.GetResultArrayDouble(i, 1));
 
                 if (algorithmSelectCheckBoxes.Count > i)
                 {
@@ -172,12 +155,7 @@ namespace AlgorithmTests
             
             graphData.ToggleVisible(selectedArray, index, ((CheckBox)sender).IsChecked == true);
         }
-
-        //private void CheckBoxOne_Click(object sender, RoutedEventArgs e)
-        //{
-        //    graphData.ToggleVisible(0, (checkBoxOne.IsChecked == true));
-        //}
-
+        
         private void CheckBoxAutoResize_Click(object sender, RoutedEventArgs e)
         {
             graphData.ToggleAutoResize(selectedArray, (checkBoxAutoResize.IsChecked == true));
@@ -188,18 +166,19 @@ namespace AlgorithmTests
             graphData.PlotPolyline(selectedArray, (checkBoxPolyLine.IsChecked == true));
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             AddAlgorithmsDataToGraph();
         }
 
-        private void PrintButton_Click(object sender, RoutedEventArgs e)
+        private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Running testbench forwards");
-            ArrayCompare.RunTestbench(5);
-            toUpdate = true;
+            RunTests();                      
+        }
 
-            arrayData.Items.Refresh();            
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            ArrayCompare.ClearAlgorithmPerformances();
         }
 
         private void ComboBoxArraySelectItem_Selected(object sender, RoutedEventArgs e)

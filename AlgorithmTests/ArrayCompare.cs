@@ -35,8 +35,8 @@ namespace AlgorithmTests
             }
         }
 
-        public static List<List<AlgorithmPerformance>> algorithmPerformances = new List<List<AlgorithmPerformance>>();
-        public static ObservableCollection<AlgorithmPerformance> algorithmPerformancesAverage = new ObservableCollection<AlgorithmPerformance>();
+        public static List<List<AlgorithmPerformance>> algorithmPerformances { get; private set; } = new List<List<AlgorithmPerformance>>();
+        public static ObservableCollection<AlgorithmPerformance> algorithmPerformancesAverage { get; private set; } = new ObservableCollection<AlgorithmPerformance>();
 
         public static int arraySize { get; private set; } = 20;
         public static int numberOfArrays { get; private set; } = 0;
@@ -155,6 +155,11 @@ namespace AlgorithmTests
         {
             algorithms.Clear();
             algorithmNames.Clear();
+        }
+
+        public static void ClearAlgorithmPerformances()
+        {
+            algorithmPerformances.Clear();
         }
         
         // Get a list of measurements for one algorithm, for one array
