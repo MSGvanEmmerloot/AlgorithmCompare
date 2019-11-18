@@ -53,12 +53,12 @@ namespace AlgorithmTests
             }
 
             AddAlgorithmCheckBoxesToList();
+            for (int c = 0; c < algorithmSelectCheckBoxes.Count; c++)
+            {
+                algorithmSelectCheckBoxes[c].Visibility = Visibility.Hidden;
+            }
 
-            graphData = new GraphData(canGraph);
-            //graphData.InitArrayDatasets(selectedArray+1);
-            //graphData.DrawCustomGraph(selectedArray);
-            RunTests();
-            AddAlgorithmsDataToGraph();
+            graphData = new GraphData(canGraph);            
         }
 
         private void AddAlgorithmCheckBoxesToList()
@@ -96,6 +96,7 @@ namespace AlgorithmTests
             toUpdate = true;
 
             arrayData.Items.Refresh();
+            AddAlgorithmsDataToGraph();
         }
 
         public void AddAlgorithmsDataToGraph()
@@ -179,6 +180,7 @@ namespace AlgorithmTests
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             ArrayCompare.ClearAlgorithmPerformances();
+            graphData.ResetGraph();
         }
 
         private void ComboBoxArraySelectItem_Selected(object sender, RoutedEventArgs e)

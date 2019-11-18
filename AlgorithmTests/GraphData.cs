@@ -130,6 +130,7 @@ namespace AlgorithmTests
         public GraphData(Canvas _canvas)
         {
             canvasData = new CanvasData(_canvas);
+            InitZero();
         }
 
         public string GetFormattedString(GraphElementTypes elementType, int datasetIndex=0, int pointIndex=0)
@@ -383,6 +384,14 @@ namespace AlgorithmTests
             Console.WriteLine("Initialized " + arrayAmount + " arrays");
         }
 
+        public void InitZero()
+        {            
+            datasetVisible.Clear();
+
+            InitArrayDatasets(canvasData.selectedArray + 1);
+            ResetGraph();
+        }
+
         public void AddAlgorithmsDataToGraph(int array, List<double[]> algorithmPerformances)
         {
             int algorithmCount = algorithmPerformances.Count;
@@ -572,6 +581,18 @@ namespace AlgorithmTests
                     }
                 }
             }
+        }
+
+        public void ResetGraph()
+        {
+            canvasData.canvas.Children.Clear();
+            for (int i=0; i< canvasData.arrayDatasets.Count; i++)
+            {
+                canvasData.ResetDatasets(i);
+                canvasData.SetMaxY(i, 10.0);
+                canvasData.Recalculate(i);
+            }
+            RedrawAxes();
         }
 
         public void RescaleCanvas(int array)
