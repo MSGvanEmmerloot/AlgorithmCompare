@@ -160,6 +160,14 @@ namespace AlgorithmTests
         public static void ClearAlgorithmPerformances()
         {
             algorithmPerformances.Clear();
+            
+            for(int a=0; a < algorithmPerformancesAverage.Count; a++)
+            {
+                for(int t=0; t< algorithmPerformancesAverage[a].ticksElapsed.Length; t++)
+                {
+                    algorithmPerformancesAverage[a].ticksElapsed[t] = 0;
+                }                
+            }
         }
         
         // Get a list of measurements for one algorithm, for one array

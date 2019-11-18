@@ -41,6 +41,7 @@ namespace AlgorithmTests
             {
                 arrayData.Columns.Add(new DataGridTextColumn
                 {
+                    Header="Array " + i,
                     Binding = new Binding(string.Format("ticksElapsed[{0}]", i)),
                     MinWidth = 50
                 });
@@ -121,6 +122,8 @@ namespace AlgorithmTests
                 AddSingleArrayDataToGraph(a);
             }
             AddSingleArrayDataToGraph(selectedArray);
+
+            measurementAmountLabel.Content = "Average values based on " + ArrayCompare.algorithmPerformances.Count + " measurements";
         }
 
         public void AddSingleArrayDataToGraph(int arrayIndex)
@@ -181,6 +184,7 @@ namespace AlgorithmTests
         {
             ArrayCompare.ClearAlgorithmPerformances();
             graphData.ResetGraph();
+            arrayData.Items.Refresh();
         }
 
         private void ComboBoxArraySelectItem_Selected(object sender, RoutedEventArgs e)

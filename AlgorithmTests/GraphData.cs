@@ -477,19 +477,27 @@ namespace AlgorithmTests
             int algorithmCount = algorithmPerformances.Count;
 
             canvasData.ResetDatasets(array);
-            datasetVisible.Clear();
+            //datasetVisible.Clear();
 
             for (int i = 0; i < algorithmCount; i++)
             {
                 //if (i > 2) { break; }
                 canvasData.AddDataset(array, algorithmPerformances[i]);
-                datasetVisible.Add(true);
+                //if (datasetVisible.Count < i)
+                //{
+                //    datasetVisible.Add(true);
+                //}
             }
 
             double maxY = 0.0;
             for (int i = 0; i < canvasData.arrayDatasets[array].dataSets.Count; i++)
             {
-                if (datasetVisible[i] == true)
+                if (datasetVisible.Count < (i+1))
+                {
+                    datasetVisible.Add(true);
+                }
+
+                if (datasetVisible.Count>0 && datasetVisible[i] == true)
                 {
                     for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
                     {
@@ -497,6 +505,13 @@ namespace AlgorithmTests
 
                         if (curY > maxY) { maxY = curY; }
                     }
+                }
+            }
+            if(datasetVisible.Count > canvasData.arrayDatasets[array].dataSets.Count)
+            {
+                for(int i= canvasData.arrayDatasets[array].dataSets.Count; i< datasetVisible.Count; i++)
+                {
+                    datasetVisible.RemoveAt(i);
                 }
             }
 
