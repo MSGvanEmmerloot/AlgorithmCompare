@@ -278,10 +278,6 @@ namespace AlgorithmTests
                 smallest /= 10;
                 division *= 10;
             }
-            //if (maxY > 1000)
-            //{
-            //    division = 1000;
-            //}
 
             for (double y = 0; y <= canvasData.graphHeight- canvasData.yStep; y += canvasData.yStep)
             {
@@ -492,16 +488,10 @@ namespace AlgorithmTests
             int algorithmCount = algorithmPerformances.Count;
 
             canvasData.ResetDatasets(array);
-            //datasetVisible.Clear();
 
             for (int i = 0; i < algorithmCount; i++)
             {
-                //if (i > 2) { break; }
                 canvasData.AddDataset(array, algorithmPerformances[i]);
-                //if (datasetVisible.Count < i)
-                //{
-                //    datasetVisible.Add(true);
-                //}
             }
 
             double maxY = 0.0;
@@ -520,20 +510,14 @@ namespace AlgorithmTests
                         {
                             double curY = canvasData.arrayDatasets[array].dataSets[i][j];
 
-                            if (curY > maxY)
-                            {
-                                maxY = curY;
-                            }
+                            if (curY > maxY) {maxY = curY;}
                         }
                     }
                     else
                     {
                         double curY = canvasData.arrayDatasets[array].averages[i];
 
-                        if (curY > maxY)
-                        {
-                            maxY = curY;
-                        }
+                        if (curY > maxY){maxY = curY;}
                     }
                 }
             }
@@ -776,20 +760,14 @@ namespace AlgorithmTests
                         {
                             double curY = canvasData.arrayDatasets[array].dataSets[i][j];
 
-                            if (curY > maxY)
-                            {
-                                maxY = curY;
-                            }
+                            if (curY > maxY){maxY = curY;}
                         }
                     }
                     else
                     {
                         double curY = canvasData.arrayDatasets[array].averages[i];
 
-                        if (curY > maxY)
-                        {
-                            maxY = curY;
-                        }
+                        if (curY > maxY){maxY = curY;}
                     }
                 }
             }
