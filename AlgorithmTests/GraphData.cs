@@ -19,12 +19,14 @@ namespace AlgorithmTests
         public CanvasData canvasData;
 
         public bool autoResize = true;
+        public bool plotDatapoints = true;
         public bool plotPolyline = true;
         public List<bool> datasetVisible { get; private set; } = new List<bool>();
 
         public class DatasetContainer
         {
             public List<double[]> dataSets = new List<double[]>();
+            public List<double> averages = new List<double>();
             public double maxValueY = 10.0;
             public double yScale  = 0.0;
             public double whitespaceLeft = 10.0f;
@@ -109,12 +111,25 @@ namespace AlgorithmTests
                 if(array< arrayDatasets.Count)
                 {
                     arrayDatasets[array].dataSets.Add(set);
+                    arrayDatasets[array].averages.Add(CalculateAverage(set));
                 }                
             }
 
             public void ResetDatasets(int array)
             {
                 arrayDatasets[array].dataSets.Clear();
+                arrayDatasets[array].averages.Clear();
+            }
+
+            public double CalculateAverage(double[] set)
+            {                
+                double result = 0.0;
+                for(int i=0; i<set.Length; i++)
+                {
+                    result += set[i];
+                }
+                if (result == 0) { return 0; }
+                return result / set.Length;
             }
 
             public void PrintDatasetValues(int array)
@@ -421,7 +436,7 @@ namespace AlgorithmTests
                 Ellipse ellipse = CreateEllipse(datasetIndex, points[p].X, points[p].Y);
                 if (datasetVisible.Count > datasetIndex)
                 {
-                    if (datasetVisible[datasetIndex] == false)
+                    if (datasetVisible[datasetIndex] == false || !plotDatapoints)
                     {
                         ellipse.Visibility = Visibility.Hidden;
                     }
@@ -590,12 +605,22 @@ namespace AlgorithmTests
                 PointCollection pointsAverage = ((Polyline)canvasData.canvas.Children[canvasElementNames[averageName]]).Points;
 
                 double sumValue = 0;
-                for (int i = 0; i < canvasData.maxValueX; i++)
-                {
-                    sumValue += canvasData.arrayDatasets[array].dataSets[d][i];
-                }
+                double averageValue = 0;
 
-                double averageValue = sumValue / canvasData.maxValueX;
+                if (canvasData.arrayDatasets[array].averages.Count > d)
+                {
+                    averageValue = canvasData.arrayDatasets[array].averages[d];
+                }
+                else
+                {
+                    for (int i = 0; i < canvasData.maxValueX; i++)
+                    {
+                        sumValue += canvasData.arrayDatasets[array].dataSets[d][i];
+                    }
+
+                    averageValue = sumValue / canvasData.maxValueX;
+                }
+                
                 for (int i = 0; i < canvasData.maxValueX; i++)
                 {
                     double xCoord = canvasData.xmin + (i * canvasData.xStep);
@@ -639,7 +664,7 @@ namespace AlgorithmTests
             {
                 string ellipseName = GetFormattedString(GraphElementTypes.Point, dataSetIndex, p);
 
-                if (canvasElementNames.Keys.Contains(ellipseName))
+                if (canvasElementNames.Keys.Contains(ellipseName) && plotDatapoints)
                 {
                     canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility = visibility;
                 }
@@ -652,6 +677,34 @@ namespace AlgorithmTests
         {
             autoResize = resize;
             if (autoResize) { RescaleCanvas(array); }
+        }
+
+        public void PlotDatapoints(int array, bool plot)
+        {
+            plotDatapoints = plot;
+            Visibility visibility = Visibility.Visible;
+
+            if (plot == false)
+            {
+                visibility = Visibility.Hidden;
+            }
+
+            for (int d = 0; d < canvasData.arrayDatasets[array].dataSets.Count; d++)
+            {
+                if (datasetVisible[d])
+                {
+                    for (int p = 0; p < canvasData.arrayDatasets[array].dataSets[d].Length; p++)
+                    {
+                        string ellipseName = GetFormattedString(GraphElementTypes.Point, d, p);
+
+                        if (canvasElementNames.Keys.Contains(ellipseName))
+                        {
+                            canvasData.canvas.Children[canvasElementNames[ellipseName]].Visibility = visibility;
+                        }
+                    }
+                }
+            }
+            RescaleCanvas(array);
         }
 
         public void PlotPolyline(int array, bool plot)
@@ -676,6 +729,7 @@ namespace AlgorithmTests
                     }
                 }
             }
+            RescaleCanvas(array);
         }
 
         public void ResetGraph()
@@ -700,9 +754,21 @@ namespace AlgorithmTests
             {
                 if (datasetVisible[i])
                 {
-                    for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
+                    if (plotPolyline || plotDatapoints)
                     {
-                        double curY = canvasData.arrayDatasets[array].dataSets[i][j];
+                        for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
+                        {
+                            double curY = canvasData.arrayDatasets[array].dataSets[i][j];
+
+                            if (curY > maxY)
+                            {
+                                maxY = curY;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        double curY = canvasData.arrayDatasets[array].averages[i];
 
                         if (curY > maxY)
                         {

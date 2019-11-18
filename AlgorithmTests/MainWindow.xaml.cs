@@ -165,6 +165,11 @@ namespace AlgorithmTests
             graphData.ToggleAutoResize(selectedArray, (checkBoxAutoResize.IsChecked == true));
         }
 
+        private void CheckBoxPlotDatapoints_Click(object sender, RoutedEventArgs e)
+        {
+            graphData.PlotDatapoints(selectedArray, (checkBoxDatapoints.IsChecked == true));
+        }
+
         private void CheckBoxPlotPolyline_Click(object sender, RoutedEventArgs e)
         {
             graphData.PlotPolyline(selectedArray, (checkBoxPolyLine.IsChecked == true));
