@@ -40,9 +40,8 @@
             <ComboBoxItem Content="No Array available" Selected="ComboBoxArraySelectItem_Selected"/>
         </ComboBox>
         <Button x:Name="restartButton" Content="Restart" HorizontalAlignment="Left" Margin="103,354,0,0" VerticalAlignment="Top" Width="89" Click="RestartButton_Click" Height="35"/>
-        <Label x:Name="measurementAmountLabel" Content="Average values based on 0 measurements" HorizontalAlignment="Left" Margin="520,41,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="measurementAmountLabel" Content="Average values based on 0 measurements" HorizontalAlignment="Left" Margin="520,30,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="checkBoxPolyLine" Content="plot polyline" HorizontalAlignment="Left" Margin="4,103,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxPlotPolyline_Click" IsChecked="True"/>
-
 
     </Grid>
 </Window>

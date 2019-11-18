@@ -510,15 +510,30 @@ namespace AlgorithmTests
                 if (datasetVisible.Count < (i+1))
                 {
                     datasetVisible.Add(true);
-                }
+                }                
 
                 if (datasetVisible.Count>0 && datasetVisible[i] == true)
                 {
-                    for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
+                    if (plotPolyline || plotDatapoints)
                     {
-                        double curY = canvasData.arrayDatasets[array].dataSets[i][j];
+                        for (int j = 0; j < canvasData.arrayDatasets[array].dataSets[i].Length; j++)
+                        {
+                            double curY = canvasData.arrayDatasets[array].dataSets[i][j];
 
-                        if (curY > maxY) { maxY = curY; }
+                            if (curY > maxY)
+                            {
+                                maxY = curY;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        double curY = canvasData.arrayDatasets[array].averages[i];
+
+                        if (curY > maxY)
+                        {
+                            maxY = curY;
+                        }
                     }
                 }
             }

@@ -8,6 +8,8 @@ namespace AlgorithmTests
 {
     public static class ArraySortingAlgorithms
     {
+        //https://www.geeksforgeeks.org/sorting-algorithms/
+
         // For every element in the array, check if it is not bigger than the next element
         public static bool CheckArraySorted(int[] arr)
         {
