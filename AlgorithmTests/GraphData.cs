@@ -11,7 +11,7 @@ namespace AlgorithmTests
 {
     public class GraphData
     {     
-        public enum GraphElementTypes { Xaxis, Yaxis, Graph, Average, Point}
+        public enum GraphElementTypes { Xaxis, Yaxis, Graph, Average, Point, Label}
 
         public List<string> canvasElementList { get; private set; } = new List<string>();
         public Dictionary<string, int> canvasElementNames { get; private set; } = new Dictionary<string, int>();
@@ -27,6 +27,7 @@ namespace AlgorithmTests
             public List<double[]> dataSets = new List<double[]>();
             public double maxValueY = 10.0;
             public double yScale  = 0.0;
+            public double whitespaceLeft = 10.0f;
         }
 
         public class CanvasData{
@@ -39,7 +40,7 @@ namespace AlgorithmTests
             public double graphWidth { get; private set; } = 0.0;
             public double graphHeight { get; private set; } = 0.0;
 
-            public double margin { get; private set; } = 10;
+            public double margin { get; private set; } = 15;
             public double xmin { get; private set; } = 0.0;
             public double xmax { get; private set; } = 0.0;
             public double ymin { get; private set; } = 0.0;
@@ -48,6 +49,7 @@ namespace AlgorithmTests
             public double xStep { get; private set; } = 0.0;
             public double yStep { get; private set; } = 0.0;
             //public double yScale { get; private set; } = 0.0;
+            public int amountYsteps { get; private set; } = 5;
 
             public List<DatasetContainer> arrayDatasets = new List<DatasetContainer>();
             public int selectedArray = 0;
@@ -83,7 +85,7 @@ namespace AlgorithmTests
                 ymin = margin;
 
                 xStep = xmax / (maxValueX - 1);
-                yStep = ymax / 5;
+                yStep = ymax / amountYsteps;
                 arrayDatasets[array].yScale = ymax / arrayDatasets[array].maxValueY;
             }
 
@@ -133,7 +135,7 @@ namespace AlgorithmTests
             InitZero();
         }
 
-        public string GetFormattedString(GraphElementTypes elementType, int datasetIndex=0, int pointIndex=0)
+        public string GetFormattedString(GraphElementTypes elementType, int datasetIndex=-1, int pointIndex=-1)
         {
             switch (elementType)
             {
@@ -142,11 +144,29 @@ namespace AlgorithmTests
                 case GraphElementTypes.Yaxis:
                     return "Y-Axis";
                 case GraphElementTypes.Graph:
-                    return "Graph " + datasetIndex;
+                    if(datasetIndex != -1)
+                    {
+                        return "Graph " + datasetIndex;
+                    }
+                    return null;
                 case GraphElementTypes.Average:
-                    return "Average " + datasetIndex;
+                    if (datasetIndex != -1)
+                    {
+                        return "Average " + datasetIndex;
+                    }
+                    return null;                    
                 case GraphElementTypes.Point:
-                    return "Point " + datasetIndex + " " + pointIndex;
+                    if (datasetIndex != -1 && pointIndex != -1)
+                    {
+                        return "Point " + datasetIndex + " " + pointIndex;
+                    }
+                    return null;
+                case GraphElementTypes.Label:
+                    if (datasetIndex != -1)
+                    {
+                        return "Label " + datasetIndex;
+                    }
+                    return null;
             }
             return null;
         }
@@ -219,6 +239,66 @@ namespace AlgorithmTests
                 }
             }
             else AddElement(yName, yaxis_path);
+
+            RedrawLabelsY();
+        }
+
+        public void RedrawLabelsY()
+        {
+            if (canvasData.arrayDatasets.Count < canvasData.selectedArray) { return; }
+            double maxY = canvasData.arrayDatasets[canvasData.selectedArray].maxValueY;
+            List<UIElement> yaxis_labels = new List<UIElement>();
+
+            double whiteSpace = 0.0f;
+            if (canvasData.arrayDatasets.Count > canvasData.selectedArray)
+            {
+                whiteSpace = canvasData.arrayDatasets[canvasData.selectedArray].whitespaceLeft;
+            }
+
+            int step = 0;
+            int division = 1;
+            int smallest = (int)(maxY / canvasData.amountYsteps);
+            while (smallest >= 10)
+            {
+                smallest /= 10;
+                division *= 10;
+            }
+            //if (maxY > 1000)
+            //{
+            //    division = 1000;
+            //}
+
+            for (double y = 0; y <= canvasData.graphHeight- canvasData.yStep; y += canvasData.yStep)
+            {
+                double yCoord;
+                if (y == 0) { yCoord = canvasData.graphHeight-20; }
+                else yCoord = (canvasData.graphHeight - y) - 27.5;
+
+                int content = (int)((maxY / canvasData.amountYsteps) * step)/division;
+
+                yaxis_labels.Add(new Label { Content = content, HorizontalContentAlignment = HorizontalAlignment.Right, Margin = new Thickness(-5-whiteSpace, yCoord, 0, 0) });
+
+                step++;
+            }
+            yaxis_labels.Add(new Label { Content = "x" + division, Margin = new Thickness(-5, -25, 0, 0)});
+
+            for (int i = 0; i < yaxis_labels.Count; i++)
+            {
+                string yLabelName = GetFormattedString(GraphElementTypes.Label, i);
+                if (canvasElementList.Contains(yLabelName))
+                {
+                    if (canvasElementNames.Keys.Contains(yLabelName))
+                    {
+                        int elementIndex = canvasElementNames[yLabelName];
+                        if (canvasData.canvas.Children.Count > elementIndex)
+                        {
+                            ReplaceElement(elementIndex, yaxis_labels[i]);
+                        }
+                        else AddElement(yLabelName, yaxis_labels[i]);
+                    }
+                }
+                else AddElement(yLabelName, yaxis_labels[i]);
+            }
         }
 
         public void ReplaceElement(int elementIndex, UIElement element)
@@ -230,7 +310,7 @@ namespace AlgorithmTests
         public void AddElement(string elementName, UIElement element)
         {
             canvasElementList.Add(elementName);
-            canvasData.canvas.Children.Add(element);            
+            canvasData.canvas.Children.Add(element);
         }
 
         public void RedrawAxes()

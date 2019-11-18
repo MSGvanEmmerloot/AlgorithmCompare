@@ -5,40 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AlgorithmTests"
         mc:Ignorable="d"
-        Title="Algorithm performance visualizer" Height="450" Width="800" Background="#FFE1F1F1" ResizeMode="NoResize">
+        Title="Algorithm performance visualizer" Height="417.2" Width="800" Background="#FFE1F1F1" ResizeMode="NoResize">
 
-    <Grid Height="420" Margin="0,0,-0.4,0" VerticalAlignment="Bottom">
-        <Label x:Name="msgLabel" Content="" HorizontalAlignment="Left" Margin="76,214,0,0" VerticalAlignment="Top" Width="333"/>
-        <Button x:Name="runButton" Content="Measure algorithm performance" HorizontalAlignment="Left" Margin="232,302,0,0" VerticalAlignment="Top" Width="222" Click="RunButton_Click" Height="86"/>
+    <Grid Height="415" Margin="0,-26,-0.4,-1" VerticalAlignment="Top">
+        <Label x:Name="msgLabel" Content="" HorizontalAlignment="Left" Margin="79,223,0,0" VerticalAlignment="Top" Width="333"/>
+        <Button x:Name="runButton" Content="Measure algorithm performance" HorizontalAlignment="Left" Margin="271,306,0,0" VerticalAlignment="Top" Width="222" Click="RunButton_Click" Height="83"/>
 
+        <Rectangle Fill="White" HorizontalAlignment="Left" Height="238" Margin="103,60,0,0" Stroke="Black" VerticalAlignment="Top" Width="390"/>
         <Canvas  Name="canGraph" Background="White"
-            Width="349" Height="198" Margin="105,86,0,0"
+            Width="368" Height="206" Margin="116,83,0,0"
             HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-        <DataGrid x:Name="arrayData"   Margin="487,86,0,32" AutoGenerateColumns="False"
+        <DataGrid x:Name="arrayData"   Margin="520,60,0,70" AutoGenerateColumns="False"
                   Width="254"
                   HorizontalAlignment="Left" AlternatingRowBackground="#FF98DD8A" AlternationCount="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Path=algorithmName}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <CheckBox x:Name="checkBoxOne" Content="1" HorizontalAlignment="Left" Margin="10,136,0,0" VerticalAlignment="Top"  HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True" />
-        <CheckBox x:Name="checkBoxTwo" Content="2" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxThree" Content="3" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxFour" Content="4" HorizontalAlignment="Left" Margin="10,181,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxFive" Content="5" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxSix" Content="6" HorizontalAlignment="Left" Margin="10,211,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxSeven" Content="7" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxEight" Content="8" HorizontalAlignment="Left" Margin="10,242,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxNine" Content="9" HorizontalAlignment="Left" Margin="10,257,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxOne" Content="1" HorizontalAlignment="Left" Margin="3,112,0,0" VerticalAlignment="Top"  HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True" />
+        <CheckBox x:Name="checkBoxTwo" Content="2" HorizontalAlignment="Left" Margin="3,127,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxThree" Content="3" HorizontalAlignment="Left" Margin="3,142,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxFour" Content="4" HorizontalAlignment="Left" Margin="3,157,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxFive" Content="5" HorizontalAlignment="Left" Margin="3,172,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxSix" Content="6" HorizontalAlignment="Left" Margin="3,187,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxSeven" Content="7" HorizontalAlignment="Left" Margin="3,203,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxEight" Content="8" HorizontalAlignment="Left" Margin="3,218,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxNine" Content="9" HorizontalAlignment="Left" Margin="3,233,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAlgorithmSelect_Click" IsChecked="True"/>
 
-        <Button x:Name="updateButton" Content="Update" HorizontalAlignment="Left" Margin="105,302,0,0" VerticalAlignment="Top" Width="89" Click="UpdateButton_Click" Height="46"/>
-        <CheckBox x:Name="checkBoxAutoResize" Content="auto resize" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAutoResize_Click" IsChecked="True"/>
-        <CheckBox x:Name="checkBoxPolyLine" Content="plot polyline" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxPlotPolyline_Click" IsChecked="True"/>
-        <ComboBox x:Name="comboBoxArraySelect" HorizontalAlignment="Left" Margin="105,49,0,0" VerticalAlignment="Top" Width="349" SelectedIndex="0">
+        <Button x:Name="updateButton" Content="Update" HorizontalAlignment="Left" Margin="103,306,0,0" VerticalAlignment="Top" Width="89" Click="UpdateButton_Click" Height="46"/>
+        <CheckBox x:Name="checkBoxAutoResize" Content="auto resize" HorizontalAlignment="Left" Margin="4,63,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxAutoResize_Click" IsChecked="True"/>
+        <CheckBox x:Name="checkBoxPolyLine" Content="plot polyline" HorizontalAlignment="Left" Margin="4,83,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" Click="CheckBoxPlotPolyline_Click" IsChecked="True"/>
+        <ComboBox x:Name="comboBoxArraySelect" HorizontalAlignment="Left" Margin="103,33,0,0" VerticalAlignment="Top" Width="390" SelectedIndex="0">
             <ComboBoxItem Content="No Array available" Selected="ComboBoxArraySelectItem_Selected"/>
         </ComboBox>
-        <Button x:Name="restartButton" Content="Restart" HorizontalAlignment="Left" Margin="105,353,0,0" VerticalAlignment="Top" Width="89" Click="RestartButton_Click" Height="35"/>
+        <Button x:Name="restartButton" Content="Restart" HorizontalAlignment="Left" Margin="103,354,0,0" VerticalAlignment="Top" Width="89" Click="RestartButton_Click" Height="35"/>
+
 
     </Grid>
 </Window>

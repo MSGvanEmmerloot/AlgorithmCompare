@@ -125,7 +125,7 @@ namespace AlgorithmTests
 
         public void AddSingleArrayDataToGraph(int arrayIndex)
         {
-            Console.WriteLine("Array " + arrayIndex + " will be calculated");
+            //Console.WriteLine("Array " + arrayIndex + " will be calculated");
             List<double[]> algorithmPerformanceList = new List<double[]>();
 
             // Get data of every algorithm for a single array
