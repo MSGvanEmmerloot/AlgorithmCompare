@@ -546,6 +546,7 @@ namespace AlgorithmTests
             Console.WriteLine("Displaying data of array " + arrayIndex);
             canvasData.selectedArray = arrayIndex;
             RecalculateDataplot(arrayIndex);
+            RescaleCanvas(arrayIndex);
         }
 
         // Recalculates the dataplot, note this function should not be used after modifying the dataset, but only when scaling the graph

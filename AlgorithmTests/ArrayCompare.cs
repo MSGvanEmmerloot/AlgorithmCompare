@@ -71,6 +71,7 @@ namespace AlgorithmTests
                 AddAlgorithmToQueue("Insertion Sort", ArraySortingAlgorithms.InsertionSort);
                 AddAlgorithmToQueue("Merge Sort", ArraySortingAlgorithms.MergeSort);
                 AddAlgorithmToQueue("Quick Sort", ArraySortingAlgorithms.QuickSort);
+                AddAlgorithmToQueue("Radix Sort", ArraySortingAlgorithms.RadixSort);
 
                 for (int i = 0; i < algorithmNames.Count; i++)
                 {
