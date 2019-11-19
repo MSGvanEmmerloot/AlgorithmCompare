@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="ArrayCompare.cs" />
     <Compile Include="ArraySortingAlgorithms.cs" />
+    <Compile Include="GraphData.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

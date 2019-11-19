@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AlgorithmTests;
 
 namespace AlgorithmTests.UnitTests
 {
@@ -86,6 +85,28 @@ namespace AlgorithmTests.UnitTests
             int[] testArray = new int[] { 0, 5, 1, 4, 3, 2 };
 
             ArraySortingAlgorithms.MergeSort(testArray);
+            bool result = ArraySortingAlgorithms.CheckArraySorted(testArray);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void QuickSort_ReturnsSortedArray()
+        {
+            int[] testArray = new int[] { 0, 5, 1, 4, 3, 2 };
+
+            ArraySortingAlgorithms.QuickSort(testArray);
+            bool result = ArraySortingAlgorithms.CheckArraySorted(testArray);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void RadixSort_ReturnsSortedArray()
+        {
+            int[] testArray = new int[] { 0, 5, 1, 4, 3, 2 };
+
+            ArraySortingAlgorithms.RadixSort(testArray);
             bool result = ArraySortingAlgorithms.CheckArraySorted(testArray);
 
             Assert.IsTrue(result);
