@@ -28,8 +28,13 @@ namespace AlgorithmTests
         public GraphData graphData;
         public List<CheckBox> algorithmSelectCheckBoxes = new List<CheckBox>();
         public List<string> arrayNames = new List<string>();
+        private List<int> arrayElementAmounts = new List<int>();
+        private List<int> measurementAmounts = new List<int>();
 
         private int selectedArray = 0;
+        private int arraySizeCurrent = 20;
+        private int arraySizeNew = 20;
+        private int measurements = 10;
 
         public MainWindow()
         {
@@ -59,7 +64,11 @@ namespace AlgorithmTests
                 algorithmSelectCheckBoxes[c].Visibility = Visibility.Hidden;
             }
 
-            graphData = new GraphData(canGraph);            
+            graphData = new GraphData(canGraph);
+
+            ArrayCompare.UpdateArraySize(arraySizeNew);
+            RefreshArraySizeSelectionList();
+            RefreshMeasurementAmountSelectionList();
         }
 
         private void AddAlgorithmCheckBoxesToList()
@@ -90,10 +99,53 @@ namespace AlgorithmTests
             comboBoxArraySelect.SelectedIndex = selectedArray;
         }
 
+        private void RefreshArraySizeSelectionList()
+        {
+            comboBoxArraySizeSelect.Items.Clear();
+            arrayElementAmounts.Clear();
+
+            AddArraySelectItem(20);
+            AddArraySelectItem(50);
+            AddArraySelectItem(100);
+            AddArraySelectItem(200);
+
+            comboBoxArraySizeSelect.SelectedIndex = 0;
+        }
+
+        private void AddArraySelectItem(int elementSize)
+        {
+            arrayElementAmounts.Add(elementSize);
+            ComboBoxItem newComboBox = new ComboBoxItem { Content = elementSize };
+            newComboBox.Selected += ComboBoxArraySizeSelectItem_Selected;
+            comboBoxArraySizeSelect.Items.Add(newComboBox);
+        }
+
+        private void RefreshMeasurementAmountSelectionList()
+        {
+            comboBoxMeasurementAmountSelect.Items.Clear();
+            measurementAmounts.Clear();
+
+            AddMeasurementSelectItem(1);
+            AddMeasurementSelectItem(5);
+            AddMeasurementSelectItem(10);
+            AddMeasurementSelectItem(25);
+            AddMeasurementSelectItem(100);
+
+            measurements = measurementAmounts[2];
+            comboBoxMeasurementAmountSelect.SelectedIndex = 2;
+        }
+
+        private void AddMeasurementSelectItem(int runs)
+        {
+            measurementAmounts.Add(runs);
+            ComboBoxItem newComboBox = new ComboBoxItem { Content = runs };
+            newComboBox.Selected += ComboBoxMeasurementAmountSelectItem_Selected;
+            comboBoxMeasurementAmountSelect.Items.Add(newComboBox);
+        }
+
         public void RunTests()
         {
-            //Console.WriteLine("Running testbench forwards");
-            ArrayCompare.RunTestbench(10);
+            ArrayCompare.RunTestbench(measurements);
             toUpdate = true;
 
             arrayData.Items.Refresh();
@@ -123,12 +175,12 @@ namespace AlgorithmTests
             }
             AddSingleArrayDataToGraph(selectedArray);
 
-            measurementAmountLabel.Content = "Average values based on " + ArrayCompare.algorithmPerformances.Count + " measurements";
+            measurementAmountLabel.Content = "Average values based on " + ArrayCompare.algorithmPerformances.Count + 
+                                             " measurements,\narray size = " + ArrayCompare.arraySize;
         }
 
         public void AddSingleArrayDataToGraph(int arrayIndex)
         {
-            //Console.WriteLine("Array " + arrayIndex + " will be calculated");
             List<double[]> algorithmPerformanceList = new List<double[]>();
 
             // Get data of every algorithm for a single array
@@ -187,21 +239,60 @@ namespace AlgorithmTests
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
+            if(arraySizeNew != arraySizeCurrent)
+            {
+                ArrayCompare.UpdateArraySize(arraySizeNew);
+                arraySizeCurrent = arraySizeNew;
+            }
             ArrayCompare.ClearAlgorithmPerformances();
             graphData.ResetGraph();
             arrayData.Items.Refresh();
+            //measurementAmountLabel.Content = "Average values based on " + ArrayCompare.algorithmPerformances.Count + " measurements";
+            measurementAmountLabel.Content = "Average values based on " + ArrayCompare.algorithmPerformances.Count +
+                                             " measurements,\narray size = " + ArrayCompare.arraySize;
         }
 
         private void ComboBoxArraySelectItem_Selected(object sender, RoutedEventArgs e)
         {
             string content = ((ComboBoxItem)sender).Content.ToString();
-            //Console.WriteLine(content);
+
             if (arrayNames.Contains(content))
             {
-                //Console.WriteLine(arrayNames.IndexOf(content));
                 selectedArray = arrayNames.IndexOf(content);
                 graphData.DisplayArrayData(selectedArray);
             }            
+        }
+
+        private void ComboBoxArraySizeSelectItem_Selected(object sender, RoutedEventArgs e)
+        {
+            string content = ((ComboBoxItem)sender).Content.ToString();
+            int contentInt = int.Parse(content);
+
+            if (arrayElementAmounts.Contains(contentInt))
+            {
+                int index= arrayElementAmounts.IndexOf(contentInt);
+                //Console.WriteLine("index=" + index + ",size=" + arrayElementAmounts.Count + ", arrayElementAmounts[" + index + "]=" + arrayElementAmounts[index]);
+                if (arrayElementAmounts.Count > index)
+                {
+                    arraySizeNew = arrayElementAmounts[index];
+                }
+            }      
+        }
+
+        private void ComboBoxMeasurementAmountSelectItem_Selected(object sender, RoutedEventArgs e)
+        {
+            string content = ((ComboBoxItem)sender).Content.ToString();
+            int contentInt = int.Parse(content);
+
+            if (measurementAmounts.Contains(contentInt))
+            {
+                int index = measurementAmounts.IndexOf(contentInt);
+                Console.WriteLine("index=" + index + ",size=" + measurementAmounts.Count + ", measurementAmounts[" + index + "]=" + measurementAmounts[index]);
+                if (measurementAmounts.Count > index)
+                {
+                    measurements = measurementAmounts[index];
+                }
+            }
         }
     }    
 }

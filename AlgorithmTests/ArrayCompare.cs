@@ -116,6 +116,11 @@ namespace AlgorithmTests
             }
 
             Console.WriteLine("Calculated the averages for " + numberOfAlgorithms + " algorithms with " + numberOfArrays + " arrays each, based on " + measurements + " measurements");
+            Console.WriteLine("Array size:" + arraySize);
+            for(int i=0; i< baseArrays.Count; i++)
+            {
+                Console.WriteLine("baseArrays[" + i + "].Length=" + baseArrays[i].Length);
+            }
             PrintAlgorithmResults();
         }
 
@@ -171,7 +176,7 @@ namespace AlgorithmTests
                 }                
             }
         }
-        
+                
         // Get a list of measurements for one algorithm, for one array
         public static double[] GetResultArrayDouble(int algorithmIndex, int arrayIndex)
         {
@@ -187,13 +192,22 @@ namespace AlgorithmTests
 
         private static void InitArrays()
         {
-            //baseArrays.Add(new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 });
-            //baseArrays.Add(new int[10] { 0, 0, 1, 1, -1, -1, 0, 1, -1, 0 });
-            //baseArrays.Add(new int[10] { 0, 9, 1, 8, 2, 7, 3, 6, 4, 5 });
-            baseArrays.Add(CreateArray_InOrder());
-            baseArrays.Add(CreateArray_SemiInOrder(10));
-            baseArrays.Add(CreateArray_MixedUp());
+            AddToBaseArrays(CreateArray_InOrder());
+            //baseArrays.Add(CreateArray_InOrder());
+            AddToBaseArrays(CreateArray_SemiInOrder(10));
+            //baseArrays.Add(CreateArray_SemiInOrder(10));
+            AddToBaseArrays(CreateArray_MixedUp());
+            //baseArrays.Add(CreateArray_MixedUp());
             ResetSortedArrays();
+        }
+
+
+        public static void UpdateArraySize(int newSize)
+        {
+            arraySize = newSize;
+            baseArrays.Clear();
+            sortedArrays.Clear();
+            InitArrays();
         }
 
         public static void AddToBaseArrays(int[] newArray)
@@ -201,7 +215,7 @@ namespace AlgorithmTests
             if(newArray.Length != arraySize){ return; }
 
             baseArrays.Add(newArray);
-
+            //Console.WriteLine(baseArrays.Count);
             ResetSortedArray(baseArrays.Count-1);
         }
 
@@ -255,9 +269,9 @@ namespace AlgorithmTests
         // Reset one element of sortedArray
         private static void ResetSortedArray(int index)
         {
-            if(baseArrays.Count < index) { return; }
+            if(baseArrays.Count < index+1) { return; }
 
-            if (sortedArrays.Count<index || index == 0)            
+            if (sortedArrays.Count<index+1)// || index == 0)            
             {
                 sortedArrays.Add(new int[baseArrays[index].Length]);
             }
