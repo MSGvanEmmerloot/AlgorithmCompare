@@ -3,7 +3,8 @@
 ## Synopsis
 
 The goal of this project is to demonstrate the performance differences between certain algorithms.
-Currently, it features algorithms that can be used to sort the contents of an array.
+Currently, it features 6 algorithms that can be used to sort the contents of an array:
+Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort and Radix Sort, as found on [this page](https://www.geeksforgeeks.org/sorting-algorithms/ "Geeksforgeeks sorting algorithms overview").
 
 ## Usage
 
@@ -11,6 +12,10 @@ To initialize the ArrayCompare class, execute the ArrayCompare.Init() function.
 Inside this function, the algorithms are selected that have to be tested. Algorithms can easily be added or removed from the List.
 Currently, the comparison functionality is executed by executing the ArrayCompare.RunTestBench() function.
 This function will execute all algorithms for all provided arrays and measure the elapsed time for every combination.
+
+![Screenshot](algorithmCompare_Screenshot.png)
+
+The screenshot above shows the current state of the application: the user can select which array data has to be plotted and can configure the amount of elements per array and the amount of measurements that's done every time the performance cycle is run. The Datatable on the right reflects the average amount of ticks it took to sort a certain array (column) with a certain algorithm (row). In the graph, the horizontal line also reflects the average calculation duration of the corresponding algorithm. The datapoints reflect the individual measurements, deselecting the "plot datapoints" and "plot polyline" checkboxes will hide these points.
 
 ## Code Example
 
